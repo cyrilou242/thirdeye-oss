@@ -358,6 +358,15 @@
       </dependency>
     </dependencies>
   </profile>
+    <profile>
+      <id>cloudsql</id>
+        <dependencies>
+          <dependency>
+            <groupId>com.google.cloud.sql</groupId>
+            <artifactId>mysql-socket-factory-connector-j-8</artifactId>
+          </dependency>
+        </dependencies>
+    </profile>
   </profiles>
 
   <build>

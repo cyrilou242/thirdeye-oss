@@ -27,6 +27,9 @@ do
     mvn install:install-file -Dfile=./${BQ_DRIVER_VERSION}/GoogleBigQueryJDBC42.jar -DgroupId='com.simba.googlebigquery' -DartifactId='jdbc42' -Dversion='1.2.4' -Dpackaging='jar'
     rm -r -d  -f ./${BQ_DRIVER_VERSION}
     ;;
+  cloudsql)
+    echo "No additional build. All GCP cloud SQL dependencies are contained in the cloudsql maven profile."
+    ;;
   *)
     echo "Unkown custom datasource argument ${var}. Aborting build."
     exit 1
