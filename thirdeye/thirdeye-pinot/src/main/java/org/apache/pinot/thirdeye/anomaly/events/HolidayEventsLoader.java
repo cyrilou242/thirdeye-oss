@@ -411,7 +411,8 @@ public class HolidayEventsLoader implements Runnable {
   }
 
   private List<Event> getCalendarEvents(String Calendar_id, long start, long end) throws Exception {
-    GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(keyPath)).createScoped(SCOPES);
+    //GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(keyPath)).createScoped(SCOPES);
+    GoogleCredential credential = GoogleCredential.getApplicationDefault().createScoped(SCOPES);
     Calendar service =
         new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("thirdeye").build();
     return service.events()
