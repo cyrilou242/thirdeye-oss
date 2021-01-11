@@ -315,8 +315,12 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
         String timeFormat = timeSpec.getFormat();
 
         if (StringUtils.isBlank(timeFormat) || TimeSpec.SINCE_EPOCH_FORMAT.equals(timeFormat)) {
+          LOG.info("Computing max datatime with epoch");
+          System.out.println("Computing max datatime with epoch");
           maxTime = timeSpec.getDataGranularity().toMillis(Long.valueOf(maxTimeString) - 1, timeZone);
         } else {
+          LOG.info("Computing max datatime with bucket");
+          System.out.println("Computing max datatime with bucket");
           DateTimeFormatter inputDataDateTimeFormatter =
               DateTimeFormat.forPattern(timeFormat).withZone(timeZone);
           DateTime endDateTime = DateTime.parse(maxTimeString, inputDataDateTimeFormatter);
