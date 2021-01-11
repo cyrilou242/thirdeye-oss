@@ -328,11 +328,11 @@ public class SqlUtils {
     LOG.info("Between Clause");
     System.out.println("Between Clause");
     TimeGranularity dataGranularity = timeSpec.getDataGranularity();  // 1  days
-    LOG.info(dataGranularity);
+    //LOG.info(dataGranularity);
     System.out.println(dataGranularity);
     long dataGranularityMillis = dataGranularity.toMillis();  //// 24*3600*1000 = 86400000
-    LOG.info(dataGranularityMillis);
-    System.out.println(dataGranularityMillis);
+    LOG.info(dataGranularityMillis.toString());
+    System.out.println(dataGranularityMillis.toString());
 
     String timeField = timeSpec.getColumnName(); /// FORMAT_TIMESTAMP('%Y%m%d', _PARTITIONTIME)
     String timeFormat = timeSpec.getFormat();   ///yyyyMMdd
@@ -358,10 +358,10 @@ public class SqlUtils {
     // we maintain this behavior for backward compatibility.
     long startUnits = (long) Math.ceil(start.getMillis()) / 1000;    ///
     long endUnits = (long) Math.ceil(endExclusive.getMillis()) / 1000;   /// what is endExclusive a this point ?
-    LOG.info(startUnits);
-    System.out.println(startUnits);
-    LOG.info(endUnits);
-    System.out.println(endUnits);
+    LOG.info(startUnits.toString());
+    System.out.println(startUnits.toString());
+    LOG.info(endUnits.toString());
+    System.out.println(endUnits.toString());
 
     if (Objects.equals(startUnits, endUnits)) {
       return String.format(" %s = %d", getToUnixTimeClause(timeFormat, timeField, sourceName), startUnits);
