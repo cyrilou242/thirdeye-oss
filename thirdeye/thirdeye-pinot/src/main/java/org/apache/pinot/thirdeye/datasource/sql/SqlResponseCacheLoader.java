@@ -321,7 +321,7 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
               DateTimeFormat.forPattern(timeFormat).withZone(timeZone);
           DateTime endDateTime = DateTime.parse(maxTimeString, inputDataDateTimeFormatter);
           Period oneBucket = datasetConfig.bucketTimeGranularity().toPeriod();
-          maxTime = endDateTime.plus(oneBucket).getMillis() - 1;
+          maxTime = endDateTime.getMillis() - 1;
         }
       }
     } catch (Exception e) {
