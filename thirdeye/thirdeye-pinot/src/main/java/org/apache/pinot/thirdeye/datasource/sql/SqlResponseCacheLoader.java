@@ -170,7 +170,7 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
     if (properties.containsKey(BIGQUERY)) {
       List<Map<String, Object>> bigQueryMapList = ConfigUtils.getList(properties.get(BIGQUERY));
       for (Map<String, Object> objMap: bigQueryMapList) {
-        System.out.println(bigQueryMapList.toString());
+        System.out.println(String.valueOf(bigQueryMapList));
         Map<String, String> dbNameToURLMap = (Map)objMap.get(DB);
         String bigQueryDriver = (String)objMap.get(DRIVER);
 
@@ -326,8 +326,8 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
           DateTime endDateTime = DateTime.parse(maxTimeString, inputDataDateTimeFormatter);
           Period oneBucket = datasetConfig.bucketTimeGranularity().toPeriod();
           maxTime = endDateTime.getMillis() - 1;
-          LOG.info(maxTime.toString());
-          System.out.println(maxTime.toString());
+          LOG.info(String.valueOf(maxTime);
+          System.out.println(String.valueOf(maxTime);
         }
       }
     } catch (Exception e) {

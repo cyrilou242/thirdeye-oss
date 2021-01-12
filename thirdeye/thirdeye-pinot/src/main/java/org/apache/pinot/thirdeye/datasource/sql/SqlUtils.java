@@ -331,8 +331,8 @@ public class SqlUtils {
     //LOG.info(dataGranularity);
     System.out.println(dataGranularity);
     long dataGranularityMillis = dataGranularity.toMillis();  //// 24*3600*1000 = 86400000
-    LOG.info(dataGranularityMillis.toString());
-    System.out.println(dataGranularityMillis.toString());
+    LOG.info(String.valueOf(dataGranularityMillis));
+    System.out.println(String.valueOf(dataGranularityMillis));
 
     String timeField = timeSpec.getColumnName(); /// FORMAT_TIMESTAMP('%Y%m%d', _PARTITIONTIME)
     String timeFormat = timeSpec.getFormat();   ///yyyyMMdd
@@ -358,10 +358,10 @@ public class SqlUtils {
     // we maintain this behavior for backward compatibility.
     long startUnits = (long) Math.ceil(start.getMillis()) / 1000;    ///
     long endUnits = (long) Math.ceil(endExclusive.getMillis()) / 1000;   /// what is endExclusive a this point ?
-    LOG.info(startUnits.toString());
-    System.out.println(startUnits.toString());
-    LOG.info(endUnits.toString());
-    System.out.println(endUnits.toString());
+    LOG.info(String.valueOf(startUnits));
+    System.out.println(String.valueOf(startUnits));
+    LOG.info(String.valueOf(endUnits));
+    System.out.println(String.valueOf(endUnits));
 
     if (Objects.equals(startUnits, endUnits)) {
       return String.format(" %s = %d", getToUnixTimeClause(timeFormat, timeField, sourceName), startUnits);
