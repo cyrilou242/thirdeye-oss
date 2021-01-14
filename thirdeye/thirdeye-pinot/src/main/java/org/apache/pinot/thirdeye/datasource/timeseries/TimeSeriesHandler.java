@@ -87,10 +87,14 @@ public class TimeSeriesHandler {
     // Time ranges for creating ThirdEye request
     DateTime start = timeSeriesRequest.getStart();
     DateTime end = timeSeriesRequest.getEnd();
+    System.out.println("INFO - Cyril - TimeSeriesResponse - handle - start: ", start);
+    System.out.println("INFO - Cyril - TimeSeriesResponse - handle - end: ", end);
     if (timeSeriesRequest.isEndDateInclusive()) {
       // ThirdEyeRequest is exclusive endpoint, so increment by one bucket
       TimeGranularity aggregationTimeGranularity = timeSeriesRequest.getAggregationTimeGranularity();
+      System.out.println("INFO - Cyril - TimeSeriesResponse - entered inclusive end date");
       end = end.plus(aggregationTimeGranularity.toMillis());
+      System.out.println("INFO - Cyril - TimeSeriesResponse - handle - end - incremented: ", end);
     }
     // Create request
     ThirdEyeRequest request = createThirdEyeRequest("timeseries", timeSeriesRequest, start, end);

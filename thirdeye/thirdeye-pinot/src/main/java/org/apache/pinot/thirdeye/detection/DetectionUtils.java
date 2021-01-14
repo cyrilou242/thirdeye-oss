@@ -151,6 +151,7 @@ public class DetectionUtils {
         long lastTimestamp = sTime.getLong(sTime.size() - 1);
 
         end = new DateTime(lastTimestamp, timezone).plus(monitoringGranularityPeriod).getMillis();
+        System.out.println("INFO - Cyril - detectionUtils - makeAnomalies - end: ", end);
       }
       anomalies.add(makeAnomaly(slice.withStart(start).withEnd(end)));
     }

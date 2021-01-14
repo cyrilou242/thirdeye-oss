@@ -235,10 +235,12 @@ public abstract class DetectionPipeline {
         long lastTimestamp = sTime.getLong(sTime.size() - 1);
 
         end = new DateTime(lastTimestamp, timezone).plus(period).getMillis();
+        System.out.println("INFO - Cyril - makeAnomalies - and end is computed - end: ", end);
       }
 
       // truncate at analysis end time
       end = Math.min(end, this.endTime);
+      System.out.println("INFO - Cyril - makeAnomalies - end is truncated - end: ", end);
 
       anomalies.add(makeAnomaly(slice.withStart(start).withEnd(end), metric));
     }

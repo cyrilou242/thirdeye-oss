@@ -96,6 +96,7 @@ public class TaskUtils {
 
   public static DetectionPipelineTaskInfo buildTaskInfoFromDetectionConfig(DetectionConfigDTO configDTO, long end) {
     long delay = getDetectionExpectedDelay(configDTO);
+    // TODO my problem could be fixed by not taking the max here, because  lastTimestamp is too advanced
     long start = Math.max(configDTO.getLastTimestamp(), end - ThirdEyeUtils.DETECTION_TASK_MAX_LOOKBACK_WINDOW - delay);
     return new DetectionPipelineTaskInfo(configDTO.getId(), start, end);
   }

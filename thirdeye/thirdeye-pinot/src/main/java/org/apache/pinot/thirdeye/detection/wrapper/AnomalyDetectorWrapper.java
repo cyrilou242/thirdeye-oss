@@ -270,6 +270,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
       long lastTimestamp = timestamps.getLong(timestamps.size() - 1);
 
       end = new DateTime(lastTimestamp, timezone).plus(period).getMillis();
+      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - checkMovingWindowDetectionStatus - end: ", end);
     }
 
     // truncate at analysis end time
@@ -279,12 +280,15 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // get a list of the monitoring window, if no sliding window used, use start time and end time as window
   List<Interval> getMonitoringWindows() {
     if (this.isMovingWindowDetection) {
+      Log.info("Using moving window computation");
       try{
         Period windowDelayPeriod = DetectionUtils.periodFromTimeUnit(windowDelay, windowDelayUnit);
         Period windowSizePeriod = DetectionUtils.periodFromTimeUnit(windowSize, windowUnit);
         List<Interval> monitoringWindows = new ArrayList<>();
         List<DateTime> monitoringWindowEndTimes = getMonitoringWindowEndTimes();
+        System.out.println("Cyril - endTime", endTime);
         DateTime detectionEndTime = new DateTime(endTime, dateTimeZone).minus(windowDelayPeriod);
+        System.out.println("Cyril - detectionEndTime", detectionEndTime);
         for (DateTime monitoringEndTime : monitoringWindowEndTimes) {
           DateTime endTime = monitoringEndTime.minus(windowDelayPeriod);
           DateTime startTime = endTime.minus(windowSizePeriod);
@@ -299,14 +303,19 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
         LOG.info("can't generate moving monitoring windows, calling with single detection window", e);
       }
     }
+    Log.info("Using default window computation.");
+    //  TODO my bug is here
     return Collections.singletonList(new Interval(startTime, endTime, DateTimeZone.forID(dataset.getTimezone())));
   }
 
   // get the list of monitoring window end times
   private List<DateTime> getMonitoringWindowEndTimes() {
     List<DateTime> endTimes = new ArrayList<>();
+    System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - entered ");
 
     // get current hour/day, depending on granularity of dataset,
+    System.out.println(endTime);
+    // TODO my problem  is here 2
     DateTime currentEndTime = new DateTime(getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone)), dateTimeZone);
 
     DateTime lastDateTime = new DateTime(getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone)), dateTimeZone);
@@ -324,6 +333,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
    * so 12.53 on 5 MINUTES dataset, with function frequency 15 MINUTES will be rounded to 12.45
    * See also {@link DetectionJobSchedulerUtils#getBoundaryAlignedTimeForDataset(DateTime, TimeUnit)}
    */
+  // TODO my problem is here !!
   private long getBoundaryAlignedTimeForDataset(DateTime currentTime) {
     TimeSpec timeSpec = ThirdEyeUtils.getTimeSpecFromDatasetConfig(dataset);
     TimeUnit dataUnit = timeSpec.getDataGranularity().getUnit();

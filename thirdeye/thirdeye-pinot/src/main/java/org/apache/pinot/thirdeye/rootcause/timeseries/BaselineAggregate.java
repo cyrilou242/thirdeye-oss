@@ -83,6 +83,7 @@ public class BaselineAggregate implements Baseline {
           .withStart(new DateTime(slice.getStart(), this.timeZone).plus(offset).getMillis())
           .withEnd(new DateTime(slice.getEnd(), this.timeZone).plus(offset).getMillis()));
     }
+    System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - generated slices with offsets ");
     return slices;
   }
 
