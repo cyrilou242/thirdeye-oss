@@ -20,6 +20,8 @@
 package org.apache.pinot.thirdeye.detection.wrapper;
 
 import com.google.common.base.Preconditions;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +56,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -270,7 +273,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
       long lastTimestamp = timestamps.getLong(timestamps.size() - 1);
 
       end = new DateTime(lastTimestamp, timezone).plus(period).getMillis();
-      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - checkMovingWindowDetectionStatus - end: ", end);
+      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - checkMovingWindowDetectionStatus - end: " + String.valueOf(end));
     }
 
     // truncate at analysis end time
@@ -282,7 +285,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
     if (this.isMovingWindowDetection) {
       LOG.info("Using moving window computation");
       try{
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        org.joda.time.format.DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         Period windowDelayPeriod = DetectionUtils.periodFromTimeUnit(windowDelay, windowDelayUnit);
         Period windowSizePeriod = DetectionUtils.periodFromTimeUnit(windowSize, windowUnit);
         List<Interval> monitoringWindows = new ArrayList<>();
