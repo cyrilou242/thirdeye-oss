@@ -32,6 +32,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,14 +88,15 @@ public class TimeSeriesHandler {
     // Time ranges for creating ThirdEye request
     DateTime start = timeSeriesRequest.getStart();
     DateTime end = timeSeriesRequest.getEnd();
-    System.out.println("INFO - Cyril - TimeSeriesResponse - handle - start: ", start);
-    System.out.println("INFO - Cyril - TimeSeriesResponse - handle - end: ", end);
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    System.out.println("INFO - Cyril - TimeSeriesResponse - handle - start: "  + fmt.print(start));
+    System.out.println("INFO - Cyril - TimeSeriesResponse - handle - end: " +  fmt.print(end));
     if (timeSeriesRequest.isEndDateInclusive()) {
       // ThirdEyeRequest is exclusive endpoint, so increment by one bucket
       TimeGranularity aggregationTimeGranularity = timeSeriesRequest.getAggregationTimeGranularity();
       System.out.println("INFO - Cyril - TimeSeriesResponse - entered inclusive end date");
       end = end.plus(aggregationTimeGranularity.toMillis());
-      System.out.println("INFO - Cyril - TimeSeriesResponse - handle - end - incremented: ", end);
+      System.out.println("INFO - Cyril - TimeSeriesResponse - handle - end - incremented: " + fmt.print(end));
     }
     // Create request
     ThirdEyeRequest request = createThirdEyeRequest("timeseries", timeSeriesRequest, start, end);

@@ -103,7 +103,7 @@ public class DetectionJobSchedulerUtils {
 
   public static DateTime getBoundaryAlignedTimeForDataset(DateTime dateTime, TimeUnit unit) {
     // TODO my problem is here !!
-    System.out.println("INFO - Cyril - getNewEntries - alignedDateTime: ", dateTime);
+    System.out.println("INFO - Cyril - getNewEntries - alignedDateTime");
     switch (unit) {
       case DAYS:
         dateTime = dateTime.withTimeAtStartOfDay();
@@ -181,11 +181,11 @@ public class DetectionJobSchedulerUtils {
     // get current hour/day, depending on granularity of dataset,
     DateTimeFormatter dateTimeFormatterForDataset = DetectionJobSchedulerUtils.
         getDateTimeFormatterForDataset(datasetConfig, dateTimeZone);
-    System.out.println("INFO - Cyril - getNewEntries - currentDateTime: ", currentDateTime);
+    System.out.println("INFO - Cyril - getNewEntries - currentDateTime");
     long alignedCurrentMillis =
         DetectionJobSchedulerUtils.getBoundaryAlignedTimeForDataset(datasetConfig, currentDateTime, anomalyFunction);
     DateTime alignedDateTime = new DateTime(alignedCurrentMillis, dateTimeZone);
-    System.out.println("INFO - Cyril - getNewEntries - alignedDateTime: ", currentDateTime);
+    System.out.println("INFO - Cyril - getNewEntries - alignedDateTime");
 
     // if first ever entry, create it with current time
     if (lastEntryForFunction == null) {

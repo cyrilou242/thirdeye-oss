@@ -280,15 +280,16 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // get a list of the monitoring window, if no sliding window used, use start time and end time as window
   List<Interval> getMonitoringWindows() {
     if (this.isMovingWindowDetection) {
-      Log.info("Using moving window computation");
+      LOG.info("Using moving window computation");
       try{
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         Period windowDelayPeriod = DetectionUtils.periodFromTimeUnit(windowDelay, windowDelayUnit);
         Period windowSizePeriod = DetectionUtils.periodFromTimeUnit(windowSize, windowUnit);
         List<Interval> monitoringWindows = new ArrayList<>();
         List<DateTime> monitoringWindowEndTimes = getMonitoringWindowEndTimes();
-        System.out.println("Cyril - endTime", endTime);
+        System.out.println("Cyril - endTime: " + String.valueOf(endTime));
         DateTime detectionEndTime = new DateTime(endTime, dateTimeZone).minus(windowDelayPeriod);
-        System.out.println("Cyril - detectionEndTime", detectionEndTime);
+        System.out.println("Cyril - detectionEndTime: " + fmt.print(detectionEndTime));
         for (DateTime monitoringEndTime : monitoringWindowEndTimes) {
           DateTime endTime = monitoringEndTime.minus(windowDelayPeriod);
           DateTime startTime = endTime.minus(windowSizePeriod);
@@ -303,7 +304,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
         LOG.info("can't generate moving monitoring windows, calling with single detection window", e);
       }
     }
-    Log.info("Using default window computation.");
+    LOG.info("Using default window computation.");
     //  TODO my bug is here
     return Collections.singletonList(new Interval(startTime, endTime, DateTimeZone.forID(dataset.getTimezone())));
   }
