@@ -359,9 +359,9 @@ public class SqlUtils {
     long startUnits = (long) Math.ceil(start.getMillis()) / 1000;    ///
     long endUnits = (long) Math.ceil(endExclusive.getMillis()) / 1000;   /// what is endExclusive a this point ?
     LOG.info(String.valueOf(startUnits));
-    System.out.println(String.valueOf(startUnits));
+    System.out.println("INFO - Cyril - getBetweenClause - startUnits", String.valueOf(startUnits));
     LOG.info(String.valueOf(endUnits));
-    System.out.println(String.valueOf(endUnits));
+    System.out.println("INFO - Cyril - getBetweenClause - endUnits", String.valueOf(endUnits));
 
     if (Objects.equals(startUnits, endUnits)) {
       return String.format(" %s = %d", getToUnixTimeClause(timeFormat, timeField, sourceName), startUnits);
