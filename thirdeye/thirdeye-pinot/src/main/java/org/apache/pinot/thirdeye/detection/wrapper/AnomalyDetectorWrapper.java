@@ -319,7 +319,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
     long newStartTime = getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone));
     LOG.info("getMonitoringWindows - [AB Tasty] fixed start time of slices: {}", newStartTime);
     LOG.info("getMonitoringWindows - [AB Tasty] fixed end time of slices: {}", newEndTime);
-    LOG.info("getMonitoringWindows - AB Tasty - Used dateTimeZone for Interval generation {}", DateTimeZone.forID(dataset.getTimezone());
+    LOG.info("getMonitoringWindows - [AB Tasty] - Used dateTimeZone for Interval generation {}", DateTimeZone.forID(dataset.getTimezone()));
 
     LOG.info("getMonitoringWindows - [AB Tasty] hopefully the newEndTime is exclusive");
 
