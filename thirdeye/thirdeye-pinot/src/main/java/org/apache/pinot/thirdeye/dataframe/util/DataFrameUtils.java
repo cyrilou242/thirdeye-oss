@@ -321,10 +321,9 @@ public class DataFrameUtils {
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] start time of slices: " + fmt.print(start));
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] end time of slices: " + fmt.print(end));
 
-    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] trying something here: " + "after");
-    //end = end.withTimeAtStartOfDay().getMillis() -1 --> make it for any granularity
-    //System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] trying something here: " + end);
-    MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), end.getMillis(), slice.filters, slice.granularity);
+    System.out.println("INFO - makeTimeSeriesRequestAligned - [Pipeline] [AB Tasty] Modifying end time to manage incomplete data points");
+    long incompleteDpEnd = roundFloor(end,period.getPeriodType()).getMillis() -1;
+    MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), incompleteDpEnd, slice.filters, slice.granularity);
 
     ThirdEyeRequest request = makeThirdEyeRequestBuilder(alignedSlice, metric, dataset, expressions, metricDAO)
         .setGroupByTimeGranularity(granularity)
@@ -422,6 +421,24 @@ public class DataFrameUtils {
         .build(reference);
 
     return new RequestContainer(request, expressions);
+  }
+
+  public static DateTime roundFloor(DateTime dt, PeriodType type) {
+    if (PeriodType.millis().equals(type)) {
+      return dt;
+    } else if (PeriodType.seconds().equals(type)) {
+      return dt.millisOfSecond().roundFloorCopy();
+    } else if (PeriodType.minutes().equals(type)) {
+      return dt.secondOfMinute().roundFloorCopy();
+    } else if (PeriodType.hours().equals(type)) {
+      return dt.minuteOfHour().roundFloorCopy();
+    } else if (PeriodType.days().equals(type)) {
+      return dt.hourOfDay().roundFloorCopy();
+    } else if (PeriodType.months().equals(type)) {
+      return dt.monthOfYear().roundFloorCopy();
+    } else {
+      throw new IllegalArgumentException(String.format("Unsupported PeriodType '%s'", type));
+    }
   }
 
   /**
