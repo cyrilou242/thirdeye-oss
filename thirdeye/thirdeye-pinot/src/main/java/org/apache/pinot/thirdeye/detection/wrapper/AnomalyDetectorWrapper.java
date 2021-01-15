@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.apache.pinot.thirdeye.detection.yaml.translator.DetectionConfigTranslator.*;
+import static org.apache.pinot.thirdeye.util.ThirdEyeUtils.getDetectionExpectedDelay;
 
 
 /**
@@ -309,23 +310,20 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
         LOG.info("can't generate moving monitoring windows, calling with single detection window", e);
       }
     }
-    LOG.info("Using default window computation.");
+    LOG.info("getMonitoringWindows - [AB Tasty] - Final startTime from config: " + startTime);
+    LOG.info("getMonitoringWindows - [AB Tasty] - Final endTime from config: " + endTime);
+    LOG.info("getMonitoringWindows - [AB Tasty] - Used dateTimeZone for transtyping: {}", dateTimeZone);
+    LOG.info("getMonitoringWindows - [AB Tasty] Modifying end time to manage incomplete data points");
+    LOG.info("getMonitoringWindows - [AB Tasty] - Used dateTimeZone for transtyping: {}", dateTimeZone);
+    long newEndTime = getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone));
+    long newStartTime = getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone));
+    LOG.info("getMonitoringWindows - [AB Tasty] fixed start time of slices: {}", newStartTime);
+    LOG.info("getMonitoringWindows - [AB Tasty] fixed end time of slices: {}", newEndTime);
+    LOG.info("getMonitoringWindows - AB Tasty - Used dateTimeZone for Interval generation {}", DateTimeZone.forID(dataset.getTimezone());
 
-    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    System.out.println("INFO - makeTimeSeriesRequestAligned - [Pipeline] [AB Tasty] Modifying end time to manage incomplete data points");
-    DateTime endDateTime = new DateTime(endTime, dateTimeZone);
-    DateTime startDateTime = new DateTime(startTime, dateTimeZone);
-    endDateTime = minusExpectedDelay(endDateTime, dataset.getExpectedDelay());
-    endDateTime = roundFloor(endDateTime, dataset.bucketTimeGranularity().toPeriod().getPeriodType()).minusMillis(1);
-    startDateTime = minusExpectedDelay(startDateTime, dataset.getExpectedDelay());
-    startDateTime = roundFloor(startDateTime, dataset.bucketTimeGranularity().toPeriod().getPeriodType()).minusMillis(1);
-    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] fixed start time of slices: " + fmt.print(startDateTime));
-    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] fixed end time of slices: " + fmt.print(endDateTime));
+    LOG.info("getMonitoringWindows - [AB Tasty] hopefully the newEndTime is exclusive");
 
-    // replace above by getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone)); to compare
-    // replace by getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone)); to compare
-
-    return Collections.singletonList(new Interval(startDateTime, endDateTime));
+    return Collections.singletonList(new Interval(newStartTime, newEndTime, DateTimeZone.forID(dataset.getTimezone())));
   }
 
   // get the list of monitoring window end times

@@ -96,9 +96,12 @@ public class TaskUtils {
 
   public static DetectionPipelineTaskInfo buildTaskInfoFromDetectionConfig(DetectionConfigDTO configDTO, long end) {
     long delay = getDetectionExpectedDelay(configDTO);
-    // TODO discuss why delay is only considered here
+    // AB Tasty max datatime fix: I consider the expected delay here
     long start = Math.max(configDTO.getLastTimestamp(), end - ThirdEyeUtils.DETECTION_TASK_MAX_LOOKBACK_WINDOW - delay);
-    return new DetectionPipelineTaskInfo(configDTO.getId(), start, end);
+    System.out.println("INFO - [AB Tasty] - Unfixed end time: " + end);
+    System.out.println("INFO - [AB Tasty] - Fixing endtime by removing delay: ");
+    System.out.println("INFO - [AB Tasty] - Fixed end time: " + (end - delay));
+    return new DetectionPipelineTaskInfo(configDTO.getId(), start, end - delay);
   }
 
   public static long createDetectionTask(DetectionPipelineTaskInfo taskInfo) {
