@@ -179,6 +179,7 @@ public class DetectionJobSchedulerUtils {
     // get current hour/day, depending on granularity of dataset,
     DateTimeFormatter dateTimeFormatterForDataset = DetectionJobSchedulerUtils.
         getDateTimeFormatterForDataset(datasetConfig, dateTimeZone);
+
     long alignedCurrentMillis =
         DetectionJobSchedulerUtils.getBoundaryAlignedTimeForDataset(datasetConfig, currentDateTime, anomalyFunction);
     DateTime alignedDateTime = new DateTime(alignedCurrentMillis, dateTimeZone);

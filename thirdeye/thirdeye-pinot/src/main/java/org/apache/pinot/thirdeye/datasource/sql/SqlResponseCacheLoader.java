@@ -315,19 +315,15 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
         String timeFormat = timeSpec.getFormat();
 
         if (StringUtils.isBlank(timeFormat) || TimeSpec.SINCE_EPOCH_FORMAT.equals(timeFormat)) {
-          LOG.info("Computing max datatime with epoch");
-          System.out.println("INFO - Cyril - Computing max datatime with epoch");
           maxTime = timeSpec.getDataGranularity().toMillis(Long.valueOf(maxTimeString) - 1, timeZone);
         } else {
-          LOG.info("Computing max datatime with bucket");
-          System.out.println("INFO - Cyril - Computing max datatime with bucket");
           DateTimeFormatter inputDataDateTimeFormatter =
               DateTimeFormat.forPattern(timeFormat).withZone(timeZone);
           DateTime endDateTime = DateTime.parse(maxTimeString, inputDataDateTimeFormatter);
           Period oneBucket = datasetConfig.bucketTimeGranularity().toPeriod();
-          maxTime = endDateTime.getMillis() - 1;
-          LOG.info(String.valueOf(maxTime));
-          System.out.println("INFO - Cyril - " + String.valueOf(maxTime));
+          LOG.info("[AB Tasty] - getting SQL max time, max time potentially incomplete");
+          // remove plus(oneBucket) to ensure complete data points (if delay has already been removed from end time)
+          maxTime = endDateTime.plus(oneBucket).getMillis() - 1;
         }
       }
     } catch (Exception e) {
