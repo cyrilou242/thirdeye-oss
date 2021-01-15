@@ -253,7 +253,8 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // there are two cases. If the data is complete, next detection starts from the end time of this detection
   // If data is incomplete, next detection starts from the latest available data's time stamp plus the one time granularity.
   long getLastTimeStamp() {
-    long end = this.endTime;
+    LOG.info("[AB Tasty] - Flooring last timestamp (the end time) with the dataset granularity.");
+    long end = getBoundaryAlignedTimeForDataset(new DateTime(this.endTime, dateTimeZone));
     if (this.dataset != null) {
       MetricSlice metricSlice = MetricSlice.from(this.metricEntity.getId(),
           this.startTime,
@@ -299,7 +300,11 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
         LOG.info("can't generate moving monitoring windows, calling with single detection window", e);
       }
     }
-    return Collections.singletonList(new Interval(startTime, endTime, DateTimeZone.forID(dataset.getTimezone())));
+    LOG.info("[AB Tasty] - Flooring end and start time with the dataset granularity. (Manages incomplete last data points)");
+    long newEndTime = getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone));
+    long newStartTime = getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone));
+
+    return Collections.singletonList(new Interval(newStartTime, newEndTime, DateTimeZone.forID(dataset.getTimezone())));
   }
 
   // get the list of monitoring window end times
