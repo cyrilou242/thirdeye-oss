@@ -275,8 +275,6 @@ public class SqlUtils {
   }
 
   static String getMaxDataTimeSQL(String timeColumn, String tableName, String sourceName) {
-    LOG.info("Getting max datatime");
-    System.out.println("Getting max datatime");
     return "SELECT MAX(" + timeColumn + ") FROM " + tableName;
   }
 
@@ -327,15 +325,12 @@ public class SqlUtils {
   static String getBetweenClause(DateTime start, DateTime endExclusive, TimeSpec timeSpec, String sourceName) {
     TimeGranularity dataGranularity = timeSpec.getDataGranularity();
     long dataGranularityMillis = dataGranularity.toMillis();
-    LOG.info("getBetweenClause - Granularity milliseconds: {}", dataGranularityMillis);
 
     String timeField = timeSpec.getColumnName();
     String timeFormat = timeSpec.getFormat();
-    LOG.info("getBetweenClause - Time field: {}", timeField);
 
     // epoch case
     if (TimeSpec.SINCE_EPOCH_FORMAT.equals(timeFormat)) {
-      LOG.info("getBetweenClause - Using epoch format in between clause");
       long startUnits = (long) Math.ceil(start.getMillis() / (double) dataGranularityMillis);
       long endUnits = (long) Math.ceil(endExclusive.getMillis() / (double) dataGranularityMillis);
 
@@ -351,8 +346,6 @@ public class SqlUtils {
     // we maintain this behavior for backward compatibility.
     long startUnits = (long) Math.ceil(start.getMillis()) / 1000;
     long endUnits = (long) Math.ceil(endExclusive.getMillis()) / 1000;
-    LOG.info("getBetweenClause - startUnits : {}", startUnits);
-    LOG.info("getBetweenClause - endUnits : {}", endUnits);
 
     if (Objects.equals(startUnits, endUnits)) {
       return String.format(" %s = %d", getToUnixTimeClause(timeFormat, timeField, sourceName), startUnits);
