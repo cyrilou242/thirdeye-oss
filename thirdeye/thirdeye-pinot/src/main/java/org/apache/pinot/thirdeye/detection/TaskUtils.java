@@ -98,7 +98,8 @@ public class TaskUtils {
     long delay = getDetectionExpectedDelay(configDTO);
     long start = Math.max(configDTO.getLastTimestamp(), end - ThirdEyeUtils.DETECTION_TASK_MAX_LOOKBACK_WINDOW - delay);
     LOG.info("[AB Tasty] - Substracting the db expected delay to the end time (which is the cron run time).");
-    return new DetectionPipelineTaskInfo(configDTO.getId(), start, end - delay);
+    long endWithDelay = end - delay;
+    return new DetectionPipelineTaskInfo(configDTO.getId(), start, endWithDelay);
   }
 
   public static long createDetectionTask(DetectionPipelineTaskInfo taskInfo) {
