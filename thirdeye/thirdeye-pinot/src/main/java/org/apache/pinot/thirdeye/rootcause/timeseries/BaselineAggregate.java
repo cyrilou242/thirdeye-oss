@@ -79,15 +79,10 @@ public class BaselineAggregate implements Baseline {
   public List<MetricSlice> scatter(MetricSlice slice) {
     List<MetricSlice> slices = new ArrayList<>();
     for (Period offset : this.offsets) {
-      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - slice start before offset: " + slice.getStart());
-      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - slice end before offset: " + slice.getEnd());
       slices.add(slice
           .withStart(new DateTime(slice.getStart(), this.timeZone).plus(offset).getMillis())
           .withEnd(new DateTime(slice.getEnd(), this.timeZone).plus(offset).getMillis()));
-      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - slice start after offset: " + new DateTime(slice.getStart(), this.timeZone).plus(offset));
-      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - slice end before offset: " + new DateTime(slice.getEnd(), this.timeZone).plus(offset));
     }
-    System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - generated slices with offsets ");
     return slices;
   }
 
