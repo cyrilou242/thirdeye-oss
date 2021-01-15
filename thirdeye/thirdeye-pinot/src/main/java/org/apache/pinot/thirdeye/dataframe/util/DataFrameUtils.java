@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
@@ -55,8 +54,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Partial;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 
 /**
@@ -297,7 +294,6 @@ public class DataFrameUtils {
    * @throws Exception
    */
   public static TimeSeriesRequestContainer makeTimeSeriesRequestAligned(MetricSlice slice, String reference, MetricConfigManager metricDAO, DatasetConfigManager datasetDAO) throws Exception {
-    System.out.println("INFO - Cyril - [Pipeline] Creating time series in makeTimeSeriesRequestAligned");
     MetricConfigDTO metric = metricDAO.findById(slice.metricId);
     if(metric == null)
       throw new IllegalArgumentException(String.format("Could not resolve metric id %d", slice.metricId));
@@ -319,9 +315,6 @@ public class DataFrameUtils {
 
     DateTime start = new DateTime(slice.start, timezone).withFields(makeOrigin(period.getPeriodType()));
     DateTime end = new DateTime(slice.end, timezone).withFields(makeOrigin(period.getPeriodType()));
-    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] start time of slices: " + fmt.print(start));
-    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] end time of slices: " + fmt.print(end));
 
     MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), end.getMillis(), slice.filters, slice.granularity);
 
