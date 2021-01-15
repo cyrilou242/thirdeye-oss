@@ -20,7 +20,6 @@
 package org.apache.pinot.thirdeye.detection.wrapper;
 
 import com.google.common.base.Preconditions;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,14 +54,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
-import org.joda.time.PeriodType;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.apache.pinot.thirdeye.detection.yaml.translator.DetectionConfigTranslator.*;
-import static org.apache.pinot.thirdeye.util.ThirdEyeUtils.getDetectionExpectedDelay;
 
 
 /**
@@ -162,7 +157,6 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
     // 2. to calculate current values and  baseline values for the anomalies detected
     // 3. anomaly detection current and baseline time series value
     if (CacheConfig.getInstance().useCentralizedCache() || CacheConfig.getInstance().useInMemoryCache()) {
-      LOG.info("[Pipeline] Using cache");
       if (this.cachingPeriodLookback >= 0) {
         MetricSlice cacheSlice = MetricSlice.from(this.metricEntity.getId(), startTime - cachingPeriodLookback, endTime,
             this.metricEntity.getFilters());
@@ -259,6 +253,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // there are two cases. If the data is complete, next detection starts from the end time of this detection
   // If data is incomplete, next detection starts from the latest available data's time stamp plus the one time granularity.
   long getLastTimeStamp() {
+    LOG.info("[AB Tasty] - Flooring last timestamp (the end time) with the dataset granularity.");
     long end = getBoundaryAlignedTimeForDataset(new DateTime(this.endTime, dateTimeZone));
     if (this.dataset != null) {
       MetricSlice metricSlice = MetricSlice.from(this.metricEntity.getId(),
@@ -276,7 +271,6 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
       long lastTimestamp = timestamps.getLong(timestamps.size() - 1);
 
       end = new DateTime(lastTimestamp, timezone).plus(period).getMillis();
-      System.out.println("INFO - Cyril - AnomalyDetectorWrapper - checkMovingWindowDetectionStatus - end: " + String.valueOf(end));
     }
 
     // truncate at analysis end time
@@ -306,18 +300,9 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
         LOG.info("can't generate moving monitoring windows, calling with single detection window", e);
       }
     }
-    LOG.info("getMonitoringWindows - [AB Tasty] - Final startTime from config: " + startTime);
-    LOG.info("getMonitoringWindows - [AB Tasty] - Final endTime from config: " + endTime);
-    LOG.info("getMonitoringWindows - [AB Tasty] - Used dateTimeZone for transtyping: {}", dateTimeZone);
-    LOG.info("getMonitoringWindows - [AB Tasty] Modifying end time to manage incomplete data points");
-    LOG.info("getMonitoringWindows - [AB Tasty] - Used dateTimeZone for transtyping: {}", dateTimeZone);
+    LOG.info("[AB Tasty] - Flooring end and start time with the dataset granularity. (Manages incomplete last data points)");
     long newEndTime = getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone));
     long newStartTime = getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone));
-    LOG.info("getMonitoringWindows - [AB Tasty] fixed start time of slices: {}", newStartTime);
-    LOG.info("getMonitoringWindows - [AB Tasty] fixed end time of slices: {}", newEndTime);
-    LOG.info("getMonitoringWindows - [AB Tasty] - Used dateTimeZone for Interval generation {}", DateTimeZone.forID(dataset.getTimezone()));
-
-    LOG.info("getMonitoringWindows - [AB Tasty] hopefully the newEndTime is exclusive");
 
     return Collections.singletonList(new Interval(newStartTime, newEndTime, DateTimeZone.forID(dataset.getTimezone())));
   }
