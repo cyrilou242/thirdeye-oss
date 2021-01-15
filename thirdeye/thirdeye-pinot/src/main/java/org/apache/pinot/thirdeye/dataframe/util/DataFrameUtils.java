@@ -319,14 +319,15 @@ public class DataFrameUtils {
 
     DateTime start = new DateTime(slice.start, timezone).withFields(makeOrigin(period.getPeriodType()));
     DateTime end = new DateTime(slice.end, timezone).withFields(makeOrigin(period.getPeriodType()));
-    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd-00");
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] start time of slices: " + fmt.print(start));
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] end time of slices: " + fmt.print(end));
 
     System.out.println("INFO - makeTimeSeriesRequestAligned - [Pipeline] [AB Tasty] Modifying end time to manage incomplete data points");
     end = minusExpectedDelay(end, dataset.getExpectedDelay());
-    long incompleteDpEnd = roundFloor(end,period.getPeriodType()).getMillis() -1 ;
-    MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), incompleteDpEnd, slice.filters, slice.granularity);
+    end = roundFloor(end,period.getPeriodType()).minusMillis(1);
+    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] fixed end time of slices: " + fmt.print(end));
+    MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), end.getMillis(), slice.filters, slice.granularity);
 
     ThirdEyeRequest request = makeThirdEyeRequestBuilder(alignedSlice, metric, dataset, expressions, metricDAO)
         .setGroupByTimeGranularity(granularity)

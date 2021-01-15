@@ -325,24 +325,17 @@ public class SqlUtils {
   }
 
   static String getBetweenClause(DateTime start, DateTime endExclusive, TimeSpec timeSpec, String sourceName) {
-    LOG.info("Between Clause");
-    System.out.println("Between Clause");
-    TimeGranularity dataGranularity = timeSpec.getDataGranularity();  // 1  days
-    //LOG.info(dataGranularity);
-    System.out.println(dataGranularity);
-    long dataGranularityMillis = dataGranularity.toMillis();  //// 24*3600*1000 = 86400000
-    LOG.info(String.valueOf(dataGranularityMillis));
-    System.out.println(String.valueOf(dataGranularityMillis));
+    TimeGranularity dataGranularity = timeSpec.getDataGranularity();
+    long dataGranularityMillis = dataGranularity.toMillis();
+    LOG.info("getBetweenClause - Granularity milliseconds: {}", dataGranularityMillis);
 
-    String timeField = timeSpec.getColumnName(); /// FORMAT_TIMESTAMP('%Y%m%d', _PARTITIONTIME)
-    String timeFormat = timeSpec.getFormat();   ///yyyyMMdd
-    LOG.info(timeField);
-    System.out.println(timeFormat);
+    String timeField = timeSpec.getColumnName();
+    String timeFormat = timeSpec.getFormat();
+    LOG.info("getBetweenClause - Time field: {}", timeField);
 
     // epoch case
     if (TimeSpec.SINCE_EPOCH_FORMAT.equals(timeFormat)) {
-      LOG.info("using epocch format in between clause");
-      System.out.println("using epocch format in between clause");
+      LOG.info("getBetweenClause - Using epoch format in between clause");
       long startUnits = (long) Math.ceil(start.getMillis() / (double) dataGranularityMillis);
       long endUnits = (long) Math.ceil(endExclusive.getMillis() / (double) dataGranularityMillis);
 
@@ -356,12 +349,10 @@ public class SqlUtils {
     // NOTE:
     // this is crazy. epoch rounds up, but timeFormat down
     // we maintain this behavior for backward compatibility.
-    long startUnits = (long) Math.ceil(start.getMillis()) / 1000;    ///
-    long endUnits = (long) Math.ceil(endExclusive.getMillis()) / 1000;   /// what is endExclusive a this point ?
-    LOG.info(String.valueOf(startUnits));
-    System.out.println("INFO - Cyril - getBetweenClause - startUnits: " + String.valueOf(startUnits));
-    LOG.info(String.valueOf(endUnits));
-    System.out.println("INFO - Cyril - getBetweenClause - endUnits: " + String.valueOf(endUnits));
+    long startUnits = (long) Math.ceil(start.getMillis()) / 1000;
+    long endUnits = (long) Math.ceil(endExclusive.getMillis()) / 1000;
+    LOG.info("getBetweenClause - startUnits : {}", startUnits);
+    LOG.info("getBetweenClause - endUnits : {}", endUnits);
 
     if (Objects.equals(startUnits, endUnits)) {
       return String.format(" %s = %d", getToUnixTimeClause(timeFormat, timeField, sourceName), startUnits);
