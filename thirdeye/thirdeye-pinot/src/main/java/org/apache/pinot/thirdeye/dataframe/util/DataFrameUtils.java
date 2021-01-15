@@ -323,10 +323,6 @@ public class DataFrameUtils {
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] start time of slices: " + fmt.print(start));
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] end time of slices: " + fmt.print(end));
 
-    System.out.println("INFO - makeTimeSeriesRequestAligned - [Pipeline] [AB Tasty] Modifying end time to manage incomplete data points");
-    end = minusExpectedDelay(end, dataset.getExpectedDelay());
-    end = roundFloor(end,period.getPeriodType()).minusMillis(1);
-    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] fixed end time of slices: " + fmt.print(end));
     MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), end.getMillis(), slice.filters, slice.granularity);
 
     ThirdEyeRequest request = makeThirdEyeRequestBuilder(alignedSlice, metric, dataset, expressions, metricDAO)
@@ -425,37 +421,6 @@ public class DataFrameUtils {
         .build(reference);
 
     return new RequestContainer(request, expressions);
-  }
-
-  private static DateTime minusExpectedDelay(DateTime dt, TimeGranularity tg) {
-    switch (tg.getUnit()) {
-      case MINUTES:
-        return dt.minusMinutes(tg.getSize());
-      case HOURS:
-        return dt.minusHours(tg.getSize());
-      case DAYS:
-        return dt.minusDays(tg.getSize());
-      default:
-        throw new IllegalArgumentException(String.format("Unsupported Delay Unit '%s'", tg.getUnit().name()));
-    }
-  }
-
-  private static DateTime roundFloor(DateTime dt, PeriodType type) {
-    if (PeriodType.millis().equals(type)) {
-      return dt;
-    } else if (PeriodType.seconds().equals(type)) {
-      return dt.millisOfSecond().roundFloorCopy();
-    } else if (PeriodType.minutes().equals(type)) {
-      return dt.secondOfMinute().roundFloorCopy();
-    } else if (PeriodType.hours().equals(type)) {
-      return dt.minuteOfHour().roundFloorCopy();
-    } else if (PeriodType.days().equals(type)) {
-      return dt.hourOfDay().roundFloorCopy();
-    } else if (PeriodType.months().equals(type)) {
-      return dt.monthOfYear().roundFloorCopy();
-    } else {
-      throw new IllegalArgumentException(String.format("Unsupported PeriodType '%s'", type));
-    }
   }
 
   /**

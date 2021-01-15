@@ -21,7 +21,6 @@ package org.apache.pinot.thirdeye.detection.wrapper;
 
 import com.google.common.base.Preconditions;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +55,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -309,8 +310,22 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
       }
     }
     LOG.info("Using default window computation.");
-    //  TODO my bug is here
-    return Collections.singletonList(new Interval(startTime, endTime, DateTimeZone.forID(dataset.getTimezone())));
+
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    System.out.println("INFO - makeTimeSeriesRequestAligned - [Pipeline] [AB Tasty] Modifying end time to manage incomplete data points");
+    DateTime endDateTime = new DateTime(endTime, dateTimeZone);
+    DateTime startDateTime = new DateTime(startTime, dateTimeZone);
+    endDateTime = minusExpectedDelay(endDateTime, dataset.getExpectedDelay());
+    endDateTime = roundFloor(endDateTime, dataset.bucketTimeGranularity().toPeriod().getPeriodType()).minusMillis(1);
+    startDateTime = minusExpectedDelay(startDateTime, dataset.getExpectedDelay());
+    startDateTime = roundFloor(startDateTime, dataset.bucketTimeGranularity().toPeriod().getPeriodType()).minusMillis(1);
+    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] fixed start time of slices: " + fmt.print(startDateTime));
+    System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] fixed end time of slices: " + fmt.print(endDateTime));
+
+    // replace above by getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone)); to compare
+    // replace by getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone)); to compare
+
+    return Collections.singletonList(new Interval(startDateTime, endDateTime));
   }
 
   // get the list of monitoring window end times
@@ -338,7 +353,6 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
    * so 12.53 on 5 MINUTES dataset, with function frequency 15 MINUTES will be rounded to 12.45
    * See also {@link DetectionJobSchedulerUtils#getBoundaryAlignedTimeForDataset(DateTime, TimeUnit)}
    */
-  // TODO my problem is here !!
   private long getBoundaryAlignedTimeForDataset(DateTime currentTime) {
     TimeSpec timeSpec = ThirdEyeUtils.getTimeSpecFromDatasetConfig(dataset);
     TimeUnit dataUnit = timeSpec.getDataGranularity().getUnit();
@@ -404,6 +418,37 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
       bucketPeriod = Period.days(1);
       windowSize = 1;
       windowUnit = TimeUnit.DAYS;
+    }
+  }
+
+  private static DateTime minusExpectedDelay(DateTime dt, TimeGranularity tg) {
+    switch (tg.getUnit()) {
+      case MINUTES:
+        return dt.minusMinutes(tg.getSize());
+      case HOURS:
+        return dt.minusHours(tg.getSize());
+      case DAYS:
+        return dt.minusDays(tg.getSize());
+      default:
+        throw new IllegalArgumentException(String.format("Unsupported Delay Unit '%s'", tg.getUnit().name()));
+    }
+  }
+
+  private static DateTime roundFloor(DateTime dt, PeriodType type) {
+    if (PeriodType.millis().equals(type)) {
+      return dt;
+    } else if (PeriodType.seconds().equals(type)) {
+      return dt.millisOfSecond().roundFloorCopy();
+    } else if (PeriodType.minutes().equals(type)) {
+      return dt.secondOfMinute().roundFloorCopy();
+    } else if (PeriodType.hours().equals(type)) {
+      return dt.minuteOfHour().roundFloorCopy();
+    } else if (PeriodType.days().equals(type)) {
+      return dt.hourOfDay().roundFloorCopy();
+    } else if (PeriodType.months().equals(type)) {
+      return dt.monthOfYear().roundFloorCopy();
+    } else {
+      throw new IllegalArgumentException(String.format("Unsupported PeriodType '%s'", type));
     }
   }
 }
