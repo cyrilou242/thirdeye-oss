@@ -45,6 +45,8 @@ public class SqlDataset {
   private String dataFile = "";
   @JsonProperty
   private String timeFormat = "EPOCH";
+  @JsonProperty
+  private String expectedDelay = "24_HOURS";
 
 
   public String getTimeColumn() {
@@ -79,10 +81,13 @@ public class SqlDataset {
     return dataFile;
   }
 
+  public String getExpectedDelay() {return expectedDelay;}
+
   @Override
   public String toString() {
     return "SqlDataset{" + "tableName='" + tableName + '\'' + ", timeColumn='" + timeColumn + '\'' + ", dimensions="
         + dimensions + ", metrics=" + metrics + ", granularity='" + granularity + '\'' + ", timezone='" + timezone
-        + '\'' + ", timeFormat='" + timeFormat + '\'' + '}' + ", dataFile='" + dataFile + '\'';
+        + '\'' + ", timeFormat='" + timeFormat + '\'' + ", expectedDelay='" + expectedDelay + '\''  + '}'
+        + ", dataFile='" + dataFile + '\'';
   }
 }

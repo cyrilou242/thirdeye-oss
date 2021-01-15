@@ -197,6 +197,7 @@ public class SqlUtils {
     datasetConfig.setTimeUnit(ThirdEyeUtils.getTimeUnit(granularity));
     datasetConfig.setTimeColumn(dataset.getTimeColumn());
     datasetConfig.setTimeFormat(dataset.getTimeFormat());
+    datasetConfig.setExpectedDelay(TimeGranularity.fromString(dataset.getExpectedDelay()));
 
 
     List<String> sortedMetrics = new ArrayList<>(dataset.getMetrics().keySet());
