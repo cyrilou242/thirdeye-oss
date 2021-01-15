@@ -259,7 +259,7 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // there are two cases. If the data is complete, next detection starts from the end time of this detection
   // If data is incomplete, next detection starts from the latest available data's time stamp plus the one time granularity.
   long getLastTimeStamp() {
-    long end = this.endTime;
+    long end = getBoundaryAlignedTimeForDataset(new DateTime(this.endTime, dateTimeZone));
     if (this.dataset != null) {
       MetricSlice metricSlice = MetricSlice.from(this.metricEntity.getId(),
           this.startTime,
@@ -329,11 +329,8 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // get the list of monitoring window end times
   private List<DateTime> getMonitoringWindowEndTimes() {
     List<DateTime> endTimes = new ArrayList<>();
-    System.out.println("INFO - Cyril - AnomalyDetectorWrapper - getMonitoringWindowEndTimes - entered ");
 
     // get current hour/day, depending on granularity of dataset,
-    System.out.println(endTime);
-    // TODO my problem  is here 2
     DateTime currentEndTime = new DateTime(getBoundaryAlignedTimeForDataset(new DateTime(endTime, dateTimeZone)), dateTimeZone);
 
     DateTime lastDateTime = new DateTime(getBoundaryAlignedTimeForDataset(new DateTime(startTime, dateTimeZone)), dateTimeZone);

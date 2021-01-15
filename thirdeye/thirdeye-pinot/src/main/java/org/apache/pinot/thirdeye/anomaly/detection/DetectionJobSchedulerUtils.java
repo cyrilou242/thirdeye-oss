@@ -102,8 +102,7 @@ public class DetectionJobSchedulerUtils {
   }
 
   public static DateTime getBoundaryAlignedTimeForDataset(DateTime dateTime, TimeUnit unit) {
-    // TODO my problem is here !!
-    System.out.println("INFO - Cyril - getNewEntries - alignedDateTime");
+    System.out.println("INFO - Cyril - getBoundaryAlignedTimeForDataset - alignedDateTime");
     switch (unit) {
       case DAYS:
         dateTime = dateTime.withTimeAtStartOfDay();
