@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.DateTimeZone;
@@ -322,7 +324,8 @@ public class DataFrameUtils {
     System.out.println("INFO - Cyril - makeTimeSeriesRequestAligned - [Pipeline] end time of slices: " + fmt.print(end));
 
     System.out.println("INFO - makeTimeSeriesRequestAligned - [Pipeline] [AB Tasty] Modifying end time to manage incomplete data points");
-    long incompleteDpEnd = roundFloor(end,period.getPeriodType()).getMillis() -1;
+    end = minusExpectedDelay(end, dataset.getExpectedDelay());
+    long incompleteDpEnd = roundFloor(end,period.getPeriodType()).getMillis() -1 ;
     MetricSlice alignedSlice = MetricSlice.from(slice.metricId, start.getMillis(), incompleteDpEnd, slice.filters, slice.granularity);
 
     ThirdEyeRequest request = makeThirdEyeRequestBuilder(alignedSlice, metric, dataset, expressions, metricDAO)
@@ -423,7 +426,20 @@ public class DataFrameUtils {
     return new RequestContainer(request, expressions);
   }
 
-  public static DateTime roundFloor(DateTime dt, PeriodType type) {
+  private static DateTime minusExpectedDelay(DateTime dt, TimeGranularity tg) {
+    switch (tg.getUnit()) {
+      case MINUTES:
+        return dt.minusMinutes(tg.getSize());
+      case HOURS:
+        return dt.minusHours(tg.getSize());
+      case DAYS:
+        return dt.minusDays(tg.getSize());
+      default:
+        throw new IllegalArgumentException(String.format("Unsupported Delay Unit '%s'", tg.getUnit().name()));
+    }
+  }
+
+  private static DateTime roundFloor(DateTime dt, PeriodType type) {
     if (PeriodType.millis().equals(type)) {
       return dt;
     } else if (PeriodType.seconds().equals(type)) {
