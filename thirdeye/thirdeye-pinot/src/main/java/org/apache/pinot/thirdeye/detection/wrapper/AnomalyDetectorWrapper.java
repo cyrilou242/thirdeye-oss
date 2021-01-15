@@ -286,16 +286,12 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
   // get a list of the monitoring window, if no sliding window used, use start time and end time as window
   List<Interval> getMonitoringWindows() {
     if (this.isMovingWindowDetection) {
-      LOG.info("Using moving window computation");
       try{
-        org.joda.time.format.DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         Period windowDelayPeriod = DetectionUtils.periodFromTimeUnit(windowDelay, windowDelayUnit);
         Period windowSizePeriod = DetectionUtils.periodFromTimeUnit(windowSize, windowUnit);
         List<Interval> monitoringWindows = new ArrayList<>();
         List<DateTime> monitoringWindowEndTimes = getMonitoringWindowEndTimes();
-        System.out.println("Cyril - endTime: " + String.valueOf(endTime));
         DateTime detectionEndTime = new DateTime(endTime, dateTimeZone).minus(windowDelayPeriod);
-        System.out.println("Cyril - detectionEndTime: " + fmt.print(detectionEndTime));
         for (DateTime monitoringEndTime : monitoringWindowEndTimes) {
           DateTime endTime = monitoringEndTime.minus(windowDelayPeriod);
           DateTime startTime = endTime.minus(windowSizePeriod);
@@ -413,37 +409,6 @@ public class AnomalyDetectorWrapper extends DetectionPipeline {
       bucketPeriod = Period.days(1);
       windowSize = 1;
       windowUnit = TimeUnit.DAYS;
-    }
-  }
-
-  private static DateTime minusExpectedDelay(DateTime dt, TimeGranularity tg) {
-    switch (tg.getUnit()) {
-      case MINUTES:
-        return dt.minusMinutes(tg.getSize());
-      case HOURS:
-        return dt.minusHours(tg.getSize());
-      case DAYS:
-        return dt.minusDays(tg.getSize());
-      default:
-        throw new IllegalArgumentException(String.format("Unsupported Delay Unit '%s'", tg.getUnit().name()));
-    }
-  }
-
-  private static DateTime roundFloor(DateTime dt, PeriodType type) {
-    if (PeriodType.millis().equals(type)) {
-      return dt;
-    } else if (PeriodType.seconds().equals(type)) {
-      return dt.millisOfSecond().roundFloorCopy();
-    } else if (PeriodType.minutes().equals(type)) {
-      return dt.secondOfMinute().roundFloorCopy();
-    } else if (PeriodType.hours().equals(type)) {
-      return dt.minuteOfHour().roundFloorCopy();
-    } else if (PeriodType.days().equals(type)) {
-      return dt.hourOfDay().roundFloorCopy();
-    } else if (PeriodType.months().equals(type)) {
-      return dt.monthOfYear().roundFloorCopy();
-    } else {
-      throw new IllegalArgumentException(String.format("Unsupported PeriodType '%s'", type));
     }
   }
 }
