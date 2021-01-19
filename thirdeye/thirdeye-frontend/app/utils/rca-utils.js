@@ -51,7 +51,7 @@ export const dateFormatFull = 'ddd, MMM D YYYY, h:mm a z';
  */
 export function makeTime(t, args) {
   if (typeof t === 'undefined') { t = moment().valueOf(); }
-  return moment(t, args).tz(config.timeZone);
+  return moment(t, args).tz(config.timeZone, true);
 }
 
 /**

@@ -13,9 +13,9 @@ module.exports = function(environment) {
 
     podModulePrefix: 'thirdeye-frontend/pods',
 
-    email: 'thirdeye@thirdeye.com',
+    email: 'cyril@abtasty.com',
 
-    devEmail: 'thirdeye@thirdeye.com',
+    devEmail: 'cyril@abtasty.com',
 
     rootURL: '/app/',
 
@@ -25,7 +25,7 @@ module.exports = function(environment) {
 
     https_only: false,
 
-    timeZone: "America/Los_Angeles",
+    timeZone: "UTC",
 
     moment: {
       includeTimezone: 'all'
@@ -47,7 +47,7 @@ module.exports = function(environment) {
       cubeWiki: "/link/to/cubeAlgorithm/wiki"
     },
 
-    // used to split username if needed.  
+    // used to split username if needed.
     userNameSplitToken: ' ',
 
     EmberENV: {
