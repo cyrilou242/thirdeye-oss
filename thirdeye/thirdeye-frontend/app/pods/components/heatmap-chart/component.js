@@ -67,7 +67,7 @@ export default Component.extend({
       dimName,
       dimValue
     } = (subdimension.data || {});
-    
+
     if (!onExclude) { return; }
 
     onExclude(role, dimName, dimValue);
@@ -94,7 +94,7 @@ export default Component.extend({
     if (!dimensions.length) { return; }
 
     dimensions.forEach((dimension) => {
-      const dimensionPlaceHolderId = `#${dimension}-heatmap-placeholder`;
+      const dimensionPlaceHolderId = `#${dimension}-heatmap-placeholder`.replace(/\./g, '\\.');
       const children = cells[dimension]
         .filter(({ size }) => size)
         .map(cell => {
