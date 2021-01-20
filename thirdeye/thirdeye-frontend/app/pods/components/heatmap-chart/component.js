@@ -67,7 +67,7 @@ export default Component.extend({
       dimName,
       dimValue
     } = (subdimension.data || {});
-
+    
     if (!onExclude) { return; }
 
     onExclude(role, dimName, dimValue);
