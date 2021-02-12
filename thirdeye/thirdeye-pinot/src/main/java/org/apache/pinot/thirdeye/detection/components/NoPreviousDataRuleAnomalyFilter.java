@@ -79,11 +79,7 @@ public class NoPreviousDataRuleAnomalyFilter implements AnomalyFilter<NoPrevious
     }
 
     private boolean isNotZero(double value) {
-        if (zeroPrecision != 0) {
-            return value > zeroPrecision || value < -zeroPrecision;
-        } else {
-            return value != 0;
-        }
+            return (value > zeroPrecision) || (value < -zeroPrecision);
     }
 
     @Override
