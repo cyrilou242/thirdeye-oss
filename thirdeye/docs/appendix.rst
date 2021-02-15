@@ -428,7 +428,8 @@ filter is set. Otherwise, it might have side effects. 
   merger:
     maxGap: 0  # prevent potential anomaly duration extension
 
-.._filter-absolutechange
+.. _filter-absolutechange:
+
 5. Absolute change anomaly filter (Type: ABSOLUTE\_CHANGE\_FILTER)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -471,6 +472,44 @@ Example:
 |              |                                                                                                   |                                                     |                                                                                                                                                                                                                                                          |
 |              |                                                                                                   |                                                     | UP\_OR\_DOWN: Keep the anomaly if it passes the threshold regardless of metric moving to which directions                                                                                                                                                |
 +--------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _filter-nopreviousdata:
+
+6. No previous data anomaly filter (Type: NO\_PREVIOUS\_DATA\_FILTER)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Check if the baseline has some data, ie is not 0. IF baseline has not data, filters the anomaly.
+
+Example:
+
+.. code-block:: yaml
+
+  filter:
+      - name: filter_rule_1
+        type: NO_PREVIOUS_DATA_FILTER
+        params:
+          offset: wo3w   # filter out changes if there was no data 3 weeks ago
+
+**Parameters:**
+
++---------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **params**    | **description**                                                                                   | **default value**                                   | **supported values**                                                                                                                                                                                                                                     |
++===============+===================================================================================================+=====================================================+==========================================================================================================================================================================================================================================================+
+| zeroPrecision | Precision of 0 test to consider baseline has no data.                                             | 0. Precision up to the 0 test precision             | double values                                                                                                                                                                                                                                            |
+|               |                                                                                                   | of the runtime environment for doubles              |                                                                                                                                                                                                                                                          |
+|               |                                                                                                   |                                                     | Eg: 0.0001, 0.00000001, etc...                                                                                                                                                                                                                           |
++---------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| offset        | The baseline timeseries used to calculate the baseline value.                                     | The default baseline used in detection algorithm.   | | \* \ **hoXh** hour-over-hour data points with a lag of X hours                                                                                                                                                                                   |
+|               |                                                                                                   |                                                     | | \* \ **doXd** day-over-day data points with a lag of X days                                                                                                                                                                                      |
+|               |                                                                                                   |                                                     | | \* \ **woXw** week-over-week data points with a lag of X weeks                                                                                                                                                                                   |
+|               |                                                                                                   |                                                     | | \* \ **moXm** month-over-month data points with a lag of X months                                                                                                                                                                                |
+|               |                                                                                                   |                                                     | | \* \ **meanXU** average of data points from the the past X units (hour, day, month, week), with a lag of 1 unit)                                                                                                                                 |
+|               |                                                                                                   |                                                     | | \* \ **medianXU** median of data points from the the past X units (hour, day, month, week), with a lag of 1 unit)                                                                                                                                |
+|               |                                                                                                   |                                                     | | \* \ **minXU** minimum of data points from the the past X units (hour, day, month, week), with a lag of 1 unit)                                                                                                                                  |
+|               |                                                                                                   |                                                     | | \* \ **maxXU** maximum of data points from the the past X units (hour, day, month, week), with a lag of 1 unit)                                                                                                                                  |
+|               |                                                                                                   |                                                     |                                                                                                                                                                                                                                                          |
+|               |                                                                                                   |                                                     | **If this value is not set, it will use the default baseline**. E.g, if the detection uses PERCENTAGE\_RULE and offset is wo1w then the baseline is last week's value. If the detection type is ALGORITHM then the baseline is generated by algorithm.   |
++---------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _all-subscription:
 
