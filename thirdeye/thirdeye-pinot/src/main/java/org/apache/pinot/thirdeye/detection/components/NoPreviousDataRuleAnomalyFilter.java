@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * No previous data anomaly filter. This rule filters the anomalies
- * if there is no data (0 or null) in the given baseline.
+ * if there is no data (0 with a given precision) in the given baseline.
  */
 @Components(type = "NO_PREVIOUS_DATA_FILTER", tags = {DetectionTag.RULE_FILTER})
 public class NoPreviousDataRuleAnomalyFilter implements AnomalyFilter<NoPreviousDataRuleAnomalyFilterSpec> {
