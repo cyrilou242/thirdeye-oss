@@ -457,7 +457,7 @@ public class MockThirdEyeDataSource implements ThirdEyeDataSource {
     static MockDataset fromMap(String name, Map<String, Object> map) {
       return new MockDataset(
           name,
-          DateTimeZone.forID(MapUtils.getString(map, "timezone", "America/Los_Angeles")),
+          DateTimeZone.forID(MapUtils.getString(map, "timezone", "UTC")),
           ConfigUtils.<String>getList(map.get("dimensions")),
           ConfigUtils.<String, Map<String, Object>>getMap(map.get("metrics")),
           ConfigUtils.parsePeriod(MapUtils.getString(map, "granularity", "1hour")));

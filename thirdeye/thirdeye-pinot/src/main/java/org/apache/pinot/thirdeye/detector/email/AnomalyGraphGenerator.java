@@ -72,7 +72,7 @@ public class AnomalyGraphGenerator {
   private static final int DEFAULT_CHART_WIDTH = 720;
   private static final Logger LOG = LoggerFactory.getLogger(AnomalyGraphGenerator.class);
 
-  public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("America/Los_Angeles");
+  public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("UTC");
 
   // Credit for initial skeleton code:
   // http://www.java2s.com/Code/Java/Chart/JFreeChartLineChartDemo6.htm
