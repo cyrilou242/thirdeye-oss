@@ -132,7 +132,7 @@ public class DimensionWrapper extends DetectionPipeline {
     this.k = MapUtils.getIntValue(config.getProperties(), "k", -1);
     this.dimensions = ConfigUtils.getList(config.getProperties().get("dimensions"));
     this.lookback = ConfigUtils.parsePeriod(MapUtils.getString(config.getProperties(), "lookback", "1w"));
-    this.timezone = DateTimeZone.forID(MapUtils.getString(config.getProperties(), "timezone", "America/Los_Angeles"));
+    this.timezone = DateTimeZone.forID(MapUtils.getString(config.getProperties(), "timezone", "UTC"));
 
     /*
      * A bucket of the time series is taken into consider only if its value is above the minLiveZone. In other words,

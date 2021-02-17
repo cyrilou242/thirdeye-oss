@@ -84,7 +84,7 @@ public class AutoOnboardMockDataSource extends AutoOnboard {
       datasetConfig.setDataset(datasetName);
       datasetConfig.setDataSource(this.dataSourceName);
       datasetConfig.setDimensions(sortedDimensions);
-      datasetConfig.setTimezone(MapUtils.getString(dataset, "timezone", "America/Los_Angeles"));
+      datasetConfig.setTimezone(MapUtils.getString(dataset, "timezone", "UTC"));
       datasetConfig.setTimeDuration(ThirdEyeUtils.getTimeDuration(granularity));
       datasetConfig.setTimeUnit(ThirdEyeUtils.getTimeUnit(granularity));
 
