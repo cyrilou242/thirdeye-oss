@@ -24,8 +24,7 @@
         Problem ${count}:
         Start: [${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]
         Duration: ${anomaly.duration}
-        Current: ${anomaly.currentVal}
-        Predicted: ${anomaly.baselineVal}
+        Current VS Expected: ${anomaly.currentVal} VS ${anomaly.baselineVal}
         Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
 
       </#if>
