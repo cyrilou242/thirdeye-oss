@@ -5,8 +5,8 @@
 </#if>
 <#list metricToAnomalyDetailsMap?keys as metric>
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------
-  *Metric:*&nbsp;_${metric}_
+--------------------------------------
+  *Metric:* _${metric}_
   <#list detectionToAnomalyDetailsMap?keys as detectionName>
     <#assign newTable = false>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
@@ -15,26 +15,24 @@
         <#assign description=anomaly.funcDescription>
       </#if>
     </#list>
-
     <#if newTable>
-
-      *Alert Name:*&nbsp;_${detectionName}_ ([edit|${dashboardHost}/app/#/manage/explore/${functionToId[detectionName]?string.computer}])
       *Description:* ${description}
     </#if>
-
+    <#assign count = 0>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
       <#if anomaly.metric==metric>
-        <#if newTable>
-          ||Start||Duration||Type||Dimensions||Current||Predicted||Change||
-        </#if>
-        <#assign newTable = false>
-        |[${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]|${anomaly.duration}|${anomaly.anomalyType}|<#if anomaly.dimensions?has_content><#list anomaly.dimensions as dimension>${dimension}\\ </#list><#else>-</#if>|_${anomaly.currentVal}_|_${anomaly.baselineVal}_|_${anomaly.positiveLift?string('+','')}${anomaly.lift}_|
+        Problem ${count}:
+        Start: [${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]
+        Duration: ${anomaly.duration}
+        Current: ${anomaly.currentVal}
+        Predicted: ${anomaly.baselineVal}
+        Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
+
       </#if>
+      <#assign count = count + 1>
     </#list>
   </#list>
 </#list>
-
-=======================================================================================
 
 *Reference Links:*
 <#if referenceLinks?has_content>
@@ -42,7 +40,3 @@
     - [${referenceLinkKey}|${referenceLinks[referenceLinkKey]}]
   </#list>
 </#if>
-
-=======================================================================================
-
-_You are receiving this alert because you have subscribed to ThirdEye Alert Service for *${alertConfigName}*. If you have any questions regarding this report, please email ask_thirdeye@linkedin.com_
