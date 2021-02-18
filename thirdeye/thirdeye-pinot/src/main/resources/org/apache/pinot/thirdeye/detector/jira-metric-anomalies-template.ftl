@@ -1,11 +1,11 @@
 <#if anomalyCount == 1>
-  ThirdEye has detected *[an anomaly|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}]* on the metric <#list metricsMap?keys as id>*${metricsMap[id].name}*</#list> between *${startTime}* and *${endTime}* (${timeZone})
+  TE detected *[an anomaly|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}]* on <#list metricsMap?keys as id>*${metricsMap[id].name}*</#list> between *${startTime}* and *${endTime}* (${timeZone})
 <#else>
-  ThirdEye has detected [*${anomalyCount} anomalies*|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}] on the metrics listed below between *${startTime}* and *${endTime}* (${timeZone})
+  TE detected [*${anomalyCount} anomalies*|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}] on multiple metrics between *${startTime}* and *${endTime}* (${timeZone})
 </#if>
 <#list metricToAnomalyDetailsMap?keys as metric>
 --------------------------------------
-  *Metric:* _${metric}_
+*Metric:* _${metric}_
   <#list detectionToAnomalyDetailsMap?keys as detectionName>
     <#assign newTable = false>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
@@ -15,14 +15,14 @@
       </#if>
     </#list>
     <#if newTable>
-      *Description:* ${description}
+    *Description:* ${description}
     </#if>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
       <#if anomaly.metric==metric>
-        Start: [${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]
-        Duration: ${anomaly.duration}
-        Current VS Expected: ${anomaly.currentVal} VS ${anomaly.baselineVal}
-        Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
+    Start: [${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]
+    Current: ${anomaly.currentVal}
+    Expected: ${anomaly.baselineVal}
+    Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
 
       </#if>
     </#list>
