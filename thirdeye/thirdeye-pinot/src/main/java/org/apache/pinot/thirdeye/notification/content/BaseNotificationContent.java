@@ -146,7 +146,7 @@ public abstract class BaseNotificationContent implements NotificationContent {
    * Generate subject based on configuration.
    */
   public static String makeSubject(AlertConfigBean.SubjectType subjectType, DetectionAlertConfigDTO notificationConfig, Map<String, Object> templateData) {
-    String baseSubject = "Thirdeye Alert : " + notificationConfig.getName();
+    String baseSubject = "TE Alert : " + notificationConfig.getName();
 
     switch (subjectType) {
       case ALERT:

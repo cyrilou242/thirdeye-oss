@@ -270,9 +270,14 @@ public class TestJiraContentFormatter {
     Assert.assertEquals(jiraEntity.getJiraProject(), "thirdeye");
 
     // Assert summary and description
-    Assert.assertEquals(jiraEntity.getSummary(), "Thirdeye Alert : alert_name1 - test_metric");
+    Assert.assertEquals(jiraEntity.getSummary(), "TE Alert : alert_name1 - test_metric");
     Assert.assertEquals(
-        jiraEntity.getDescription().replaceAll(" ", ""),
+        jiraEntity.getDescription()
+                .replaceAll(" ", "")
+                // number/month formatting depends on runtime
+                .replaceAll("janv.0", "Jan0")
+                .replaceAll("100,00", "100.00")
+                .replaceAll("12,75", "12.75"),
         IOUtils.toString(Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("test-jira-anomalies-template.ftl")).replaceAll(" ", ""));
   }
@@ -312,10 +317,17 @@ public class TestJiraContentFormatter {
     Assert.assertEquals(jiraEntity.getJiraProject(), "thirdeye");
 
     // Assert summary and description
-    Assert.assertEquals(jiraEntity.getSummary(), "Thirdeye Alert : alert_name2 - test_metric, key=value");
+    Assert.assertEquals(jiraEntity.getSummary(), "TE Alert : alert_name2 - test_metric, key=value");
     Assert.assertEquals(
-        jiraEntity.getDescription().replaceAll(" ", ""),
+        jiraEntity.getDescription()
+                .replaceAll(" ", "")
+                // number/month formatting depends on runtime
+                .replaceAll("janv.0", "Jan0")
+                .replaceAll("100,00", "100.00")
+                .replaceAll("12,75", "12.75"),
         IOUtils.toString(Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream("test-jira-anomalies-template.ftl")).replaceAll(" ", "").replaceAll("alert_name1", "alert_name2"));
+                .getResourceAsStream("test-jira-anomalies-template.ftl"))
+                .replaceAll(" ", "")
+                .replaceAll("alert_name1", "alert_name2"));
   }
 }
