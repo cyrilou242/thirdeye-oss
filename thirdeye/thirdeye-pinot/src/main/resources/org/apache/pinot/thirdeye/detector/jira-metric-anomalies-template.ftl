@@ -4,7 +4,6 @@
   ThirdEye has detected [*${anomalyCount} anomalies*|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}] on the metrics listed below between *${startTime}* and *${endTime}* (${timeZone})
 </#if>
 <#list metricToAnomalyDetailsMap?keys as metric>
-
 --------------------------------------
   *Metric:* _${metric}_
   <#list detectionToAnomalyDetailsMap?keys as detectionName>
@@ -18,21 +17,17 @@
     <#if newTable>
       *Description:* ${description}
     </#if>
-    <#assign count = 0>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
       <#if anomaly.metric==metric>
-        Problem ${count}:
         Start: [${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]
         Duration: ${anomaly.duration}
         Current VS Expected: ${anomaly.currentVal} VS ${anomaly.baselineVal}
         Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
 
       </#if>
-      <#assign count = count + 1>
     </#list>
   </#list>
 </#list>
-
 *Reference Links:*
 <#if referenceLinks?has_content>
   <#list referenceLinks?keys as referenceLinkKey>
