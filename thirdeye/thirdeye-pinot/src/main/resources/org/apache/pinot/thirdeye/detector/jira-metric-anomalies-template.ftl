@@ -1,3 +1,4 @@
+--------------------------------------
 <#if anomalyCount == 1>
   *[Anomaly|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}]* on <#list metricsMap?keys as id>*${metricsMap[id].name}*</#list> between *${startTime}* and *${endTime}* (${timeZone})
 <#else>
@@ -5,7 +6,6 @@
 </#if>
 <#list metricToAnomalyDetailsMap?keys as metric>
 --------------------------------------
-*Metric:* _${metric}_
   <#list detectionToAnomalyDetailsMap?keys as detectionName>
     <#assign newTable = false>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
@@ -15,7 +15,7 @@
       </#if>
     </#list>
     <#if newTable>
-    *Description:* ${description}
+    ${description}
     </#if>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
       <#if anomaly.metric==metric>
