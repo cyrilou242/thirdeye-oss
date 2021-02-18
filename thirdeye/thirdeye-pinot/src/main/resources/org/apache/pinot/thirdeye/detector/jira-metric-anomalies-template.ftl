@@ -1,7 +1,7 @@
 <#if anomalyCount == 1>
-  TE detected *[an anomaly|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}]* on <#list metricsMap?keys as id>*${metricsMap[id].name}*</#list> between *${startTime}* and *${endTime}* (${timeZone})
+  *[Anomaly|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}]* on <#list metricsMap?keys as id>*${metricsMap[id].name}*</#list> between *${startTime}* and *${endTime}* (${timeZone})
 <#else>
-  TE detected [*${anomalyCount} anomalies*|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}] on multiple metrics between *${startTime}* and *${endTime}* (${timeZone})
+  [*${anomalyCount} anomalies*|${dashboardHost}/app/#/anomalies?anomalyIds=${anomalyIds}] on metrics below between *${startTime}* and *${endTime}* (${timeZone})
 </#if>
 <#list metricToAnomalyDetailsMap?keys as metric>
 --------------------------------------
