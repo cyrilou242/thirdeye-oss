@@ -97,7 +97,7 @@ public class AnomalyDetectorWrapperTest {
         new AnomalyDetectorWrapper(this.provider, this.config, 1538418436000L, 1540837636000L);
     List<Interval> monitoringWindows = detectionPipeline.getMonitoringWindows();
     for (Interval window : monitoringWindows) {
-      Assert.assertEquals(window, new Interval(1538418436000L, 1540837636000L, DateTimeZone.forID(TimeSpec.DEFAULT_TIMEZONE)));
+      Assert.assertEquals(window, new Interval(1538352000000L, 1540771200000L, DateTimeZone.forID(TimeSpec.DEFAULT_TIMEZONE)));
     }
   }
 
