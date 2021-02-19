@@ -21,7 +21,9 @@ name: Pinot Tests
 
 on:
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - abtasty-master
 
 jobs:
   unit-test:
