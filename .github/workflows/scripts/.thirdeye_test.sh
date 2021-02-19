@@ -1,3 +1,4 @@
+#!/bin/bash -x
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,25 +18,15 @@
 # under the License.
 #
 
-name: Pinot Quickstarts
+# Java version
+java -version
 
-on:
-  pull_request:
-    branches:
-      - master
-
-jobs:
-  quickstarts:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [ 1.8, 10, 11, 12, 13, 14, 15-ea ]
-    name: Pinot Quickstart on JDK ${{ matrix.java }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Quickstart on JDK ${{ matrix.java }}
-        run: .github/workflows/scripts/.pinot_quickstart.sh
+# Check ThirdEye related changes
+cd thirdeye
+mvn test
+failed=$?
+if [ $failed -eq 0 ]; then
+  exit 0
+else
+  exit 1
+fi
