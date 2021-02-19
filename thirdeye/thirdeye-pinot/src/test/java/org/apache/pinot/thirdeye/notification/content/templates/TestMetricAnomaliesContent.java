@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Properties;
 import org.apache.pinot.thirdeye.anomaly.AnomalyType;
 import org.apache.pinot.thirdeye.common.restclient.MockThirdEyeRcaRestClient;
@@ -101,6 +102,7 @@ public class TestMetricAnomaliesContent {
 
   @BeforeMethod
   public void beforeMethod(){
+    Locale.setDefault(new Locale.Builder().setLanguage("en").setRegion("US").build());
     testDAOProvider = DAOTestBase.getInstance();
     DAORegistry daoRegistry = DAORegistry.getInstance();
     detectionConfigDAO = daoRegistry.getDetectionConfigManager();
@@ -133,7 +135,7 @@ public class TestMetricAnomaliesContent {
   public void testGetEmailEntity() throws Exception {
     DetectionRegistry.registerComponent(ThresholdRuleDetector.class.getName(), "THRESHOLD");
 
-    DateTimeZone dateTimeZone = DateTimeZone.forID("America/Los_Angeles");
+    DateTimeZone dateTimeZone = DateTimeZone.forID("UTC");
     ThirdEyeAnomalyConfiguration thirdeyeAnomalyConfig = new ThirdEyeAnomalyConfiguration();
     thirdeyeAnomalyConfig.setId(id);
     thirdeyeAnomalyConfig.setDashboardHost(dashboardHost);

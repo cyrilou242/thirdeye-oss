@@ -1,4 +1,3 @@
-#!/bin/bash -x
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -18,34 +17,23 @@
 # under the License.
 #
 
-# Java version
-java -version
+name: ThirdEye Tests
 
-# Check ThirdEye related changes
-DIFF_URL=$(jq -r ".pull_request.diff_url" "${GITHUB_EVENT_PATH}")
-curl -L ${DIFF_URL} |grep -E '^diff --git'
-curl -L ${DIFF_URL} |grep -E '^diff --git' |grep -E '( a/thirdeye)|( b/thirdeye)'
-if [ $? -eq 0 ]; then
-  echo 'ThirdEye changes.'
+on:
+  pull_request:
+    branches: [ abtasty-master ]
 
-  if [ "${RUN_INTEGRATION_TESTS}" == false ]; then
-    echo 'Skip ThirdEye tests when integration tests off'
-    exit 0
-  fi
-
-  cd thirdeye
-  mvn test
-  failed=$?
-  if [ $failed -eq 0 ]; then
-    exit 0
-  else
-    exit 1
-  fi
-fi
-
-# Only run integration tests if needed
-if [ "$RUN_INTEGRATION_TESTS" != false ]; then
-  mvn test -B -P github-actions,integration-tests-only && exit 0 || exit 1
-else
-  mvn test -B -P github-actions,no-integration-tests && exit 0 || exit 1
-fi
+jobs:
+  te-unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: TE Unit Test
+        run: .github/workflows/scripts/.thirdeye_test.sh
+      - name: Upload coverage to Codecov
+        run: |
+          bash <(curl -s https://codecov.io/bash) -cF unittests

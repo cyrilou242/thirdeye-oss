@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -67,6 +68,7 @@ public class TestEntityGroupKeyContent {
 
   @BeforeMethod
   public void beforeMethod(){
+    Locale.setDefault(new Locale.Builder().setLanguage("en").setRegion("US").build());
     testDAOProvider = DAOTestBase.getInstance();
     DAORegistry daoRegistry = DAORegistry.getInstance();
     detectionDAO = daoRegistry.getDetectionConfigManager();
@@ -116,7 +118,7 @@ public class TestEntityGroupKeyContent {
     detection.setDescription("test_description");
     long id = detectionDAO.save(detection);
 
-    DateTimeZone dateTimeZone = DateTimeZone.forID("America/Los_Angeles");
+    DateTimeZone dateTimeZone = DateTimeZone.forID("UTC");
 
     MergedAnomalyResultDTO subGroupedAnomaly1 = DaoTestUtils.getTestGroupedAnomalyResult(
         new DateTime(2017, 11, 7, 10, 0, dateTimeZone).getMillis(),
@@ -207,7 +209,7 @@ public class TestEntityGroupKeyContent {
     detection.setDescription("test_description");
     long id = detectionDAO.save(detection);
 
-    DateTimeZone dateTimeZone = DateTimeZone.forID("America/Los_Angeles");
+    DateTimeZone dateTimeZone = DateTimeZone.forID("UTC");
 
     MergedAnomalyResultDTO metricAnomaly = DaoTestUtils.getTestMergedAnomalyResult(
         new DateTime(2017, 11, 7, 10, 0, dateTimeZone).getMillis(),

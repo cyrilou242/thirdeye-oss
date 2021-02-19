@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.commons.io.IOUtils;
@@ -93,6 +94,7 @@ public class TestJiraContentFormatter {
 
   @BeforeMethod
   public void beforeMethod() throws Exception {
+    Locale.setDefault(new Locale.Builder().setLanguage("en").setRegion("US").build());
     testDAOProvider = DAOTestBase.getInstance();
     DAORegistry daoRegistry = DAORegistry.getInstance();
     this.alertConfigDAO = daoRegistry.getDetectionAlertConfigManager();
@@ -273,11 +275,7 @@ public class TestJiraContentFormatter {
     Assert.assertEquals(jiraEntity.getSummary(), "TE Alert : alert_name1 - test_metric");
     Assert.assertEquals(
         jiraEntity.getDescription()
-                .replaceAll(" ", "")
-                // number/month formatting depends on runtime
-                .replaceAll("janv.0", "Jan0")
-                .replaceAll("100,00", "100.00")
-                .replaceAll("12,75", "12.75"),
+                .replaceAll(" ", ""),
         IOUtils.toString(Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("test-jira-anomalies-template.ftl")).replaceAll(" ", ""));
   }
@@ -320,11 +318,7 @@ public class TestJiraContentFormatter {
     Assert.assertEquals(jiraEntity.getSummary(), "TE Alert : alert_name2 - test_metric, key=value");
     Assert.assertEquals(
         jiraEntity.getDescription()
-                .replaceAll(" ", "")
-                // number/month formatting depends on runtime
-                .replaceAll("janv.0", "Jan0")
-                .replaceAll("100,00", "100.00")
-                .replaceAll("12,75", "12.75"),
+                .replaceAll(" ", ""),
         IOUtils.toString(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("test-jira-anomalies-template.ftl"))
                 .replaceAll(" ", "")
