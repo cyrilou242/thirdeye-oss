@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.pinot.thirdeye.anomaly.task.TaskConstants;
+import org.apache.pinot.thirdeye.common.time.TimeGranularity;
 import org.apache.pinot.thirdeye.datalayer.bao.DAOTestBase;
 import org.apache.pinot.thirdeye.datalayer.bao.DatasetConfigManager;
 import org.apache.pinot.thirdeye.datalayer.bao.DetectionConfigManager;
@@ -280,6 +281,7 @@ public class DataAvailabilityTaskSchedulerTest {
     ds1.setDataset(TEST_DATASET_PREFIX + intSuffix);
     ds1.setLastRefreshTime(refreshTime);
     ds1.setLastRefreshEventTime(refreshEventTime);
+    ds1.setExpectedDelay(new TimeGranularity(5, TimeUnit.MINUTES));
     return datasetConfigDAO.save(ds1);
   }
 
