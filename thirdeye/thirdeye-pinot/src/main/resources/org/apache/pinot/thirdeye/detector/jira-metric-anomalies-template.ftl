@@ -28,8 +28,8 @@
     </#list>
   </#list>
 </#list>
-*Reference Links:*
 <#if referenceLinks?has_content>
+  *Reference Links:*
   <#list referenceLinks?keys as referenceLinkKey>
     - [${referenceLinkKey}|${referenceLinks[referenceLinkKey]}]
   </#list>
