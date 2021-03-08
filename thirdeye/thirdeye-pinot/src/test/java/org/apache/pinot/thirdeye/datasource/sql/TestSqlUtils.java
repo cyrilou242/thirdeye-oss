@@ -31,6 +31,7 @@ import org.apache.pinot.thirdeye.datasource.ThirdEyeCacheRegistry;
 import org.apache.pinot.thirdeye.datasource.ThirdEyeRequest;
 import org.apache.pinot.thirdeye.datasource.cache.MetricDataset;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -120,5 +121,29 @@ public class TestSqlUtils {
     String actual = SqlUtils.getSql(request, this.metricFunction, HashMultimap.create(), timeSpec, this.dataset);
     String expected = "SELECT date, country, SUM(metric) FROM table WHERE  date = 18383 GROUP BY date, country LIMIT 100000";
     Assert.assertEquals(actual, expected);
+  }
+
+  @Test
+  public void testGetDatePartitionClauseForBigQuery() {
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    DateTime startTime = formatter.parseDateTime("2020-01-05 12:00:05");
+    DateTime endTime = formatter.parseDateTime("2020-01-15 18:00:05");
+    String actual = SqlUtils.getDatePartitionClause(startTime, endTime, "BigQuery");
+
+    String expected = "_PARTITIONTIME >= '2020-01-04 00:00:00' AND _PARTITIONTIME <= '2020-01-17 00:00:00'";
+    Assert.assertEquals(actual, expected);
+  }
+
+  @Test
+  public void testGetMaxDataTimeSQL() {
+    String timeColumn = "date";
+    String tableName = "table_name";
+
+    DateTimeUtils.setCurrentMillisFixed(1612137600000L); // 2021-02-01 00:00:00
+    String actual = SqlUtils.getMaxDataTimeSQL(timeColumn, tableName, "BigQuery");
+
+    String expected = "SELECT MAX(" + timeColumn + ") FROM " + tableName + " WHERE " + "_PARTITIONTIME >= '2020-11-30 00:00:00' AND _PARTITIONTIME <= '2021-02-10 00:00:00'";
+    Assert.assertEquals(actual, expected);
+
   }
 }
