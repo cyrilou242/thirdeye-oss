@@ -254,6 +254,10 @@ public class SqlUtils {
     sb.append(" WHERE ");
     sb.append(betweenClause);
 
+    String datePartitionClause = getDatePartitionClause(startTime, endTimeExclusive, sourceName);
+    if (datePartitionClause != null) {
+      sb.append(" AND ").append(datePartitionClause);
+    }
 
     String dimensionWhereClause = getDimensionWhereClause(filterSet);
     if (StringUtils.isNotBlank(dimensionWhereClause)) {
@@ -275,10 +279,22 @@ public class SqlUtils {
   }
 
   static String getMaxDataTimeSQL(String timeColumn, String tableName, String sourceName) {
-    return "SELECT MAX(" + timeColumn + ") FROM " + tableName;
+    // for databases having time partition optimization, get max time in last 2 months should be enough to get max time
+    DateTime currentTime = DateTime.now();
+    DateTime startTime = currentTime.minusMonths(2);
+    DateTime endTime = currentTime.plusDays(7);
+    String datePartitionClause = getDatePartitionClause(startTime, endTime, sourceName);
+
+    String maxQuery = "SELECT MAX(" + timeColumn + ") FROM " + tableName;
+    if (datePartitionClause != null) {
+      return maxQuery + " WHERE " + datePartitionClause;
+    } else {
+      return maxQuery;
+    }
   }
 
   static String getDimensionFiltersSQL(String dimension, String tableName, String sourceName) {
+    // FIXME for databases having time partition optimization, get different dim values in relevant timeframe
     return "SELECT DISTINCT(" + dimension + ") FROM " + tableName;
   }
 
@@ -354,13 +370,29 @@ public class SqlUtils {
   }
 
   /**
-   * For presto performance optimization
+   * Time partition optimization for specific database systems
+   *
    * @param startTime start time of where clause
+   * @param endTime exclusive end time of where clause
+   * @param sourceName Database name
    * @return datepartition filtering clause
    */
-  static String getDatePartitionClause(DateTime startTime) {
-    DateTimeFormatter inputDataDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-00");
-    return "datepartition >= " + "'" + inputDataDateTimeFormatter.print(startTime) + "'";
+  static String getDatePartitionClause(DateTime startTime, DateTime endTime, String sourceName) {
+    if (sourceName.equals(PRESTO)) {
+      DateTimeFormatter inputDataDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-00");
+      return "datepartition >= " + "'" + inputDataDateTimeFormatter.print(startTime) + "'";
+    } else if (sourceName.equals(BIGQUERY)) {
+      DateTimeFormatter inputDataDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+      // assumes partition by day, will work for hour but not the best
+      // makes the partition mandatory, ok in our case
+      DateTime datePartitionLowerBound = startTime.withMillisOfDay(0).minusDays(1);
+      DateTime datePartitionUpperBound = endTime.withMillisOfDay(0).plusDays(2);
+      return String.format("_PARTITIONTIME >= '%s' AND _PARTITIONTIME <= '%s'",
+              inputDataDateTimeFormatter.print(datePartitionLowerBound),
+              inputDataDateTimeFormatter.print(datePartitionUpperBound));
+    } else {
+      return null;
+    }
   }
 
   /**
