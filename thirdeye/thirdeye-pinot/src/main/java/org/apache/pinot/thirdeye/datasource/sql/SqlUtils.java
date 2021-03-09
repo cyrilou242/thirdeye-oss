@@ -294,8 +294,19 @@ public class SqlUtils {
   }
 
   static String getDimensionFiltersSQL(String dimension, String tableName, String sourceName) {
-    // FIXME for databases having time partition optimization, get different dim values in relevant timeframe
-    return "SELECT DISTINCT(" + dimension + ") FROM " + tableName;
+    // FIXME for databases having time partition optimization, get different dim values in a RELEVANT timeframe
+    DateTime currentTime = DateTime.now();
+    DateTime startTime = currentTime.minusYears(3);
+    DateTime endTime = currentTime.plusYears(1);
+    String datePartitionClause = getDatePartitionClause(startTime, endTime, sourceName);
+
+    String distinctDimensionsQuery = "SELECT DISTINCT(" + dimension + ") FROM " + tableName;
+
+    if (datePartitionClause != null) {
+      return distinctDimensionsQuery + " WHERE " + datePartitionClause;
+    } else {
+      return distinctDimensionsQuery;
+    }
   }
 
   private static String getSelectionClause(MetricConfigDTO metricConfig, MetricFunction metricFunction, List<String> groupByKeys, TimeGranularity granularity, TimeSpec dateTimeSpec) {
