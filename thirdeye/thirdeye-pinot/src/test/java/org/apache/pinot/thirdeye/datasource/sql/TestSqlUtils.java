@@ -81,7 +81,10 @@ public class TestSqlUtils {
 
   @AfterMethod
   public void afterMethod() {
-    try { this.daoTestBase.cleanup(); } catch (Exception ignore) {}
+    try {
+      this.daoTestBase.cleanup();
+    } catch (Exception ignore) {}
+    DateTimeUtils.setCurrentMillisSystem();
   }
 
   @Test
