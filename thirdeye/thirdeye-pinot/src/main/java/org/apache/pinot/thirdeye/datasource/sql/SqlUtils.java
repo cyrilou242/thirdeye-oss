@@ -493,7 +493,9 @@ public class SqlUtils {
    */
   static String quote(String value) {
     String quoteChar = "";
-    if (!StringUtils.isNumeric(value)) {
+    // AB Tasty specific --> always put between quotes
+    //if (!StringUtils.isNumeric(value)) {
+    if (true) {
       quoteChar = "\'";
       if (value.contains("'")) {
         value = value.replace("'", "''");
