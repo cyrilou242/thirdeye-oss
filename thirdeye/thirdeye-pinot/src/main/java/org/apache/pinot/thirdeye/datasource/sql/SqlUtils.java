@@ -493,9 +493,12 @@ public class SqlUtils {
    */
   static String quote(String value) {
     String quoteChar = "";
-    // AB Tasty specific --> always put between quotes
-    //if (!StringUtils.isNumeric(value)) {
-    if (true) {
+    // AB Tasty specific --> no quotes for boolean
+    if (value.toLowerCase().equals("true") || value.toLowerCase().equals("false")) {
+      quoteChar = "";
+    // AB Tasty specific --> numeric between quotes
+    //if (StringUtils.isNumeric(value)) {}
+    } else {
       quoteChar = "\'";
       if (value.contains("'")) {
         value = value.replace("'", "''");
