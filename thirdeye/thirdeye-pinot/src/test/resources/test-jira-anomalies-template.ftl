@@ -7,10 +7,5 @@ Current: 0
 Expected: 0
 Change: *+100.00 %*
 
-Start: [Jan 01, 18:05 UTC|test/app/#/rootcause?anomalyId=5]
-Current: 0
-Expected: 2_HOURS
-Change: *+12 hours & 45mins*
-
 *Reference Links:*
 -[test_ref_key|test_ref_value]

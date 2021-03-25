@@ -25,9 +25,9 @@
     Current: ${anomaly.currentVal}
     Expected: ${anomaly.baselineVal}
     Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
+
       <#assign firstAnomaly=false>
       </#if>
-
       </#if>
     </#list>
   </#list>
