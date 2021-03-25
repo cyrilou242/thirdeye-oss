@@ -17,12 +17,16 @@
     <#if newTable>
     ${description}
     </#if>
+    <#assign firstAnomaly=true>
     <#list detectionToAnomalyDetailsMap[detectionName] as anomaly>
       <#if anomaly.metric==metric>
+      <#if firstAnomaly>
     Start: [${anomaly.startDateTime} ${anomaly.timezone}|${anomaly.anomalyURL}${anomaly.anomalyId}]
     Current: ${anomaly.currentVal}
     Expected: ${anomaly.baselineVal}
     Change: *${anomaly.positiveLift?string('+','')}${anomaly.lift}*
+      <#assign firstAnomaly=false>
+      </#if>
 
       </#if>
     </#list>
