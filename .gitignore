@@ -12,8 +12,6 @@ bin/
 out/
 .DS_Store
 test-output
-pinot-broker/test-output/
-pinot-core/test-output/
 *.log
 .doppelganger
 docs/_build
@@ -23,7 +21,6 @@ docs/_build
 **/.docker/
 **/.env
 **/.factorypath
-kubernetes/examples/helm/charts/
 
 # Site Dependencies
 /node_modules
@@ -33,7 +30,6 @@ yarn.lock
 # Production
 /build
 # Generated files
-.docusaurus
 .cache-loader
 
 # Misc
