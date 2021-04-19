@@ -38,20 +38,6 @@
   <url>https://pinot.apache.org/</url>
 
   <modules>
-    <module>pinot-spi</module>
-    <module>pinot-broker</module>
-    <module>pinot-common</module>
-    <module>pinot-clients</module>
-    <module>pinot-server</module>
-    <module>pinot-core</module>
-    <module>pinot-controller</module>
-    <module>pinot-minion</module>
-    <module>pinot-plugins</module>
-    <module>pinot-tools</module>
-    <module>pinot-perf</module>
-    <module>pinot-integration-tests</module>
-    <module>pinot-distribution</module>
-    <module>pinot-connectors</module>
   </modules>
 
   <licenses>
