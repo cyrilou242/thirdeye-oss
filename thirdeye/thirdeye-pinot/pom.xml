@@ -78,6 +78,11 @@
       <groupId>io.dropwizard-bundles</groupId>
       <artifactId>dropwizard-redirect-bundle</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-json-logging</artifactId>
+    </dependency>
+
 
     <!-- Pin jackson version and omit from third party dependencies-->
     <dependency>
