@@ -158,7 +158,7 @@ public class TestSqlUtils {
     DateTimeUtils.setCurrentMillisFixed(1612137600000L); // 2021-02-01 00:00:00
     String actual = SqlUtils.getDimensionFiltersSQL(dimension, tableName, "BigQuery");
 
-    String expected = "SELECT DISTINCT(" + dimension + ") FROM " + tableName + " WHERE " + "_PARTITIONTIME >= '2018-01-31 00:00:00' AND _PARTITIONTIME <= '2022-02-03 00:00:00'";
+    String expected = "SELECT DISTINCT(" + dimension + ") FROM " + tableName + " WHERE " + "_PARTITIONTIME >= '2020-11-30 00:00:00' AND _PARTITIONTIME <= '2021-03-03 00:00:00'";
     Assert.assertEquals(actual, expected);
 
   }
