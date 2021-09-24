@@ -18,6 +18,9 @@ package org.apache.pinot.thirdeye.datasource.sql;
 
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.HashMultimap;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.pinot.thirdeye.common.time.TimeGranularity;
 import org.apache.pinot.thirdeye.common.time.TimeSpec;
@@ -102,7 +105,7 @@ public class TestSqlUtils {
 
     String timeFormat = TimeSpec.SINCE_EPOCH_FORMAT;
     TimeSpec timeSpec = new TimeSpec("date", timeGranularity, timeFormat);
-    String actualSql = SqlUtils.getSql(request, this.metricFunction, HashMultimap.create(), timeSpec, this.dataset);
+    String actualSql = SqlUtils.getSql(request, this.metricFunction, HashMultimap.create(), timeSpec, this.dataset, new HashMap<>());
     String expected = "SELECT date, country, SUM(metric) FROM table WHERE  date = 18383 GROUP BY date, country ORDER BY SUM(metric) DESC LIMIT 100";
     Assert.assertEquals(actualSql, expected);
   }
@@ -121,7 +124,7 @@ public class TestSqlUtils {
 
     String timeFormat = TimeSpec.SINCE_EPOCH_FORMAT;
     TimeSpec timeSpec = new TimeSpec("date", timeGranularity, timeFormat);
-    String actual = SqlUtils.getSql(request, this.metricFunction, HashMultimap.create(), timeSpec, this.dataset);
+    String actual = SqlUtils.getSql(request, this.metricFunction, HashMultimap.create(), timeSpec, this.dataset, new HashMap<>());
     String expected = "SELECT date, country, SUM(metric) FROM table WHERE  date = 18383 GROUP BY date, country LIMIT 100000";
     Assert.assertEquals(actual, expected);
   }
@@ -131,7 +134,7 @@ public class TestSqlUtils {
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     DateTime startTime = formatter.parseDateTime("2020-01-05 12:00:05");
     DateTime endTime = formatter.parseDateTime("2020-01-15 18:00:05");
-    String actual = SqlUtils.getDatePartitionClause(startTime, endTime, "BigQuery");
+    String actual = SqlUtils.getDatePartitionClause(startTime, endTime, "BigQuery", null);
 
     String expected = "_PARTITIONTIME >= '2020-01-04 00:00:00' AND _PARTITIONTIME <= '2020-01-17 00:00:00'";
     Assert.assertEquals(actual, expected);
@@ -143,7 +146,7 @@ public class TestSqlUtils {
     String tableName = "table_name";
 
     DateTimeUtils.setCurrentMillisFixed(1612137600000L); // 2021-02-01 00:00:00
-    String actual = SqlUtils.getMaxDataTimeSQL(timeColumn, tableName, "BigQuery");
+    String actual = SqlUtils.getMaxDataTimeSQL(timeColumn, tableName, "BigQuery", new HashMap<>());
 
     String expected = "SELECT MAX(" + timeColumn + ") FROM " + tableName + " WHERE " + "_PARTITIONTIME >= '2020-11-30 00:00:00' AND _PARTITIONTIME <= '2021-02-10 00:00:00'";
     Assert.assertEquals(actual, expected);
@@ -156,9 +159,39 @@ public class TestSqlUtils {
     String tableName = "table_name";
 
     DateTimeUtils.setCurrentMillisFixed(1612137600000L); // 2021-02-01 00:00:00
-    String actual = SqlUtils.getDimensionFiltersSQL(dimension, tableName, "BigQuery");
+    String actual = SqlUtils.getDimensionFiltersSQL(dimension, tableName, "BigQuery", new HashMap<>());
 
     String expected = "SELECT DISTINCT(" + dimension + ") FROM " + tableName + " WHERE " + "_PARTITIONTIME >= '2020-11-30 00:00:00' AND _PARTITIONTIME <= '2021-03-03 00:00:00'";
+    Assert.assertEquals(actual, expected);
+
+  }
+
+  @Test
+  public void testGetMaxDataTimeSQLForBigQueryCustomPartition() {
+    String timeColumn = "date";
+    String tableName = "table_name";
+
+    DateTimeUtils.setCurrentMillisFixed(1612137600000L); // 2021-02-01 00:00:00
+    Map<String, String> properties = new HashMap<>();
+    properties.put("customPartition", "DATE(processingTime)");  //customPartition is the key name for custom properties
+    String actual = SqlUtils.getMaxDataTimeSQL(timeColumn, tableName, "BigQuery", properties);
+
+    String expected = "SELECT MAX(" + timeColumn + ") FROM " + tableName + " WHERE " + "DATE(processingTime) >= '2020-11-30 00:00:00' AND DATE(processingTime) <= '2021-02-10 00:00:00'";
+    Assert.assertEquals(actual, expected);
+
+  }
+
+  @Test
+  public void testGetDimensionFiltersSQLForBigQueryCustomPartition() {
+    String dimension = "myDimension";
+    String tableName = "table_name";
+
+    DateTimeUtils.setCurrentMillisFixed(1612137600000L); // 2021-02-01 00:00:00
+    Map<String, String> properties = new HashMap<>();
+    properties.put("customPartition", "DATE(processingTime)");  //customPartition is the key name for custom properties
+    String actual = SqlUtils.getDimensionFiltersSQL(dimension, tableName, "BigQuery", properties);
+
+    String expected = "SELECT DISTINCT(" + dimension + ") FROM " + tableName + " WHERE " + "DATE(processingTime) >= '2020-11-30 00:00:00' AND DATE(processingTime) <= '2021-03-03 00:00:00'";
     Assert.assertEquals(actual, expected);
 
   }
