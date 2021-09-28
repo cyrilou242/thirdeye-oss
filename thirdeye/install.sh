@@ -21,7 +21,7 @@ do
   bigquery)
     # change driver version if need be. Default value is the recommended, tested version.
     BQ_DRIVER_VERSION=${BQ_DRIVER_VERSION:="SimbaJDBCDriverforGoogleBigQuery42_1.2.4.1007"}
-    wget -N https://storage.googleapis.com/simba-bq-release/jdbc/${BQ_DRIVER_VERSION}.zip
+    curl -LO https://storage.googleapis.com/simba-bq-release/jdbc/${BQ_DRIVER_VERSION}.zip
     unzip -o ${BQ_DRIVER_VERSION}.zip -d ./${BQ_DRIVER_VERSION}
     # install bigQuery driver
     mvn install:install-file -Dfile=./${BQ_DRIVER_VERSION}/GoogleBigQueryJDBC42.jar -DgroupId='com.simba.googlebigquery' -DartifactId='jdbc42' -Dversion='1.2.4' -Dpackaging='jar'
