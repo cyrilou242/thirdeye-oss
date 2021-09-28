@@ -20,6 +20,8 @@
 package org.apache.pinot.thirdeye.datasource.sql;
 
 import com.google.common.cache.LoadingCache;
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +72,7 @@ public class SqlThirdEyeDataSource implements ThirdEyeDataSource {
         String dataset = metricFunction.getDataset();
         DatasetConfigDTO datasetConfig = ThirdEyeUtils.getDatasetConfigFromName(dataset);
         TimeSpec dataTimeSpec = ThirdEyeUtils.getTimestampTimeSpecFromDatasetConfig(datasetConfig);
+        Map<String, String> properties  = datasetConfig.getProperties();
 
         if (timeSpec == null) {
           timeSpec = dataTimeSpec;
@@ -79,7 +82,7 @@ public class SqlThirdEyeDataSource implements ThirdEyeDataSource {
         sourceName = tableComponents[0];
         String dbName = tableComponents[1];
 
-        String sqlQuery = SqlUtils.getSql(request, metricFunction, request.getFilterSet(), dataTimeSpec, sourceName);
+        String sqlQuery = SqlUtils.getSql(request, metricFunction, request.getFilterSet(), dataTimeSpec, sourceName, properties);
         ThirdEyeResultSetGroup thirdEyeResultSetGroup = executeSQL(new SqlQuery(sqlQuery, sourceName, dbName,
             metricFunction.getMetricName(), request.getGroupBy(), request.getGroupByTimeGranularity(), dataTimeSpec));
 

@@ -264,7 +264,7 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
   public Map<String, List<String>> getDimensionFilters(String dataset) throws Exception {
     LOG.info("Getting dimension filters for " + dataset);
     DatasetConfigDTO datasetConfig = ThirdEyeUtils.getDatasetConfigFromName(dataset);
-
+    Map<String, String> properties = datasetConfig.getProperties();
     String sourceName = dataset.split("\\.")[0];
     String tableName = SqlUtils.computeSqlTableName(dataset);
     DataSource dataSource = getDataSourceFromDataset(dataset);
@@ -275,7 +275,7 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
       dimensionFilters.put(dimension, new ArrayList<>());
       try (Connection conn = dataSource.getConnection();
           Statement stmt = conn.createStatement();
-          ResultSet rs = stmt.executeQuery(SqlUtils.getDimensionFiltersSQL(dimension, tableName, sourceName));) {
+          ResultSet rs = stmt.executeQuery(SqlUtils.getDimensionFiltersSQL(dimension, tableName, sourceName, properties));) {
         while (rs.next()) {
           dimensionFilters.get(dimension).add(rs.getString(1));
         }
@@ -295,6 +295,7 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
   public long getMaxDataTime(String dataset) throws Exception {
     LOG.info("Getting max data time for " + dataset);
     DatasetConfigDTO datasetConfig = ThirdEyeUtils.getDatasetConfigFromName(dataset);
+    Map<String, String> properties = datasetConfig.getProperties();
     TimeSpec timeSpec = ThirdEyeUtils.getTimestampTimeSpecFromDatasetConfig(datasetConfig);
     DateTimeZone timeZone = Utils.getDataTimeZone(dataset);
     long maxTime = 0;
@@ -305,7 +306,7 @@ public class SqlResponseCacheLoader extends CacheLoader<SqlQuery, ThirdEyeResult
 
     try (Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(SqlUtils.getMaxDataTimeSQL(timeSpec.getColumnName(), tableName, sourceName))) {
+        ResultSet rs = stmt.executeQuery(SqlUtils.getMaxDataTimeSQL(timeSpec.getColumnName(), tableName, sourceName, properties))) {
       if (rs.next()) {
         String maxTimeString = rs.getString(1);
         if (maxTimeString.indexOf('.') >= 0) {

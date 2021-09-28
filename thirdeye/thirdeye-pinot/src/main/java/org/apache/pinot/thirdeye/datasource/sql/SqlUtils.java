@@ -29,6 +29,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +90,8 @@ public class SqlUtils {
   private static final String H2 = "H2";
   private static final String VERTICA = "Vertica";
   private static final String BIGQUERY = "BigQuery";
+
+  private static final String CUSTOM_PARTITION_PROPERTY  = "customPartition";
 
   /**
    * Insert a table to SQL database, currently only used by H2, that can be read by ThirdEye
@@ -162,9 +165,9 @@ public class SqlUtils {
    * @throws ExecutionException
    */
   public static String getSql(ThirdEyeRequest request, MetricFunction metricFunction,
-      Multimap<String, String> filterSet, TimeSpec dataTimeSpec, String sourceName) {
+      Multimap<String, String> filterSet, TimeSpec dataTimeSpec, String sourceName, Map<String, String> properties) {
     return getSql(metricFunction, request.getStartTimeInclusive(), request.getEndTimeExclusive(), filterSet,
-        request.getGroupBy(), request.getGroupByTimeGranularity(), dataTimeSpec, request.getLimit(), sourceName);
+        request.getGroupBy(), request.getGroupByTimeGranularity(), dataTimeSpec, request.getLimit(), sourceName, properties);
   }
 
   /**
@@ -198,6 +201,11 @@ public class SqlUtils {
     datasetConfig.setTimeColumn(dataset.getTimeColumn());
     datasetConfig.setTimeFormat(dataset.getTimeFormat());
     datasetConfig.setExpectedDelay(TimeGranularity.fromString(dataset.getExpectedDelay()));
+    if (!dataset.getCustomPartition().isEmpty()) {
+      Map<String, String> properties = new HashMap<>();
+      properties.put(CUSTOM_PARTITION_PROPERTY, dataset.getCustomPartition());
+      datasetConfig.setProperties(properties);
+    }
 
 
     List<String> sortedMetrics = new ArrayList<>(dataset.getMetrics().keySet());
@@ -240,7 +248,7 @@ public class SqlUtils {
 
   private static String getSql(MetricFunction metricFunction, DateTime startTime,
       DateTime endTimeExclusive, Multimap<String, String> filterSet, List<String> groupBy,
-      TimeGranularity timeGranularity, TimeSpec dataTimeSpec, int limit, String sourceName) {
+      TimeGranularity timeGranularity, TimeSpec dataTimeSpec, int limit, String sourceName, Map<String, String> properties) {
 
     MetricConfigDTO metricConfig = ThirdEyeUtils.getMetricConfigFromId(metricFunction.getMetricId());
     String dataset = metricFunction.getDataset();
@@ -254,7 +262,7 @@ public class SqlUtils {
     sb.append(" WHERE ");
     sb.append(betweenClause);
 
-    String datePartitionClause = getDatePartitionClause(startTime, endTimeExclusive, sourceName);
+    String datePartitionClause = getDatePartitionClause(startTime, endTimeExclusive, sourceName, properties.get(CUSTOM_PARTITION_PROPERTY));
     if (datePartitionClause != null) {
       sb.append(" AND ").append(datePartitionClause);
     }
@@ -278,12 +286,12 @@ public class SqlUtils {
     return sb.toString();
   }
 
-  static String getMaxDataTimeSQL(String timeColumn, String tableName, String sourceName) {
+  static String getMaxDataTimeSQL(String timeColumn, String tableName, String sourceName, Map<String, String> properties) {
     // for databases having time partition optimization, get max time in last 2 months should be enough to get max time
     DateTime currentTime = DateTime.now();
     DateTime startTime = currentTime.minusMonths(2);
     DateTime endTime = currentTime.plusDays(7);
-    String datePartitionClause = getDatePartitionClause(startTime, endTime, sourceName);
+    String datePartitionClause = getDatePartitionClause(startTime, endTime, sourceName, properties.get(CUSTOM_PARTITION_PROPERTY));
 
     String maxQuery = "SELECT MAX(" + timeColumn + ") FROM " + tableName;
     if (datePartitionClause != null) {
@@ -293,12 +301,12 @@ public class SqlUtils {
     }
   }
 
-  static String getDimensionFiltersSQL(String dimension, String tableName, String sourceName) {
+  static String getDimensionFiltersSQL(String dimension, String tableName, String sourceName, Map<String,String> properties) {
     // FIXME for databases having time partition optimization, get different dim values in a RELEVANT timeframe
     DateTime currentTime = DateTime.now();
     DateTime startTime = currentTime.minusMonths(2);
     DateTime endTime = currentTime.plusMonths(1);
-    String datePartitionClause = getDatePartitionClause(startTime, endTime, sourceName);
+    String datePartitionClause = getDatePartitionClause(startTime, endTime, sourceName, properties.get(CUSTOM_PARTITION_PROPERTY));
 
     String distinctDimensionsQuery = "SELECT DISTINCT(" + dimension + ") FROM " + tableName;
 
@@ -388,7 +396,7 @@ public class SqlUtils {
    * @param sourceName Database name
    * @return datepartition filtering clause
    */
-  static String getDatePartitionClause(DateTime startTime, DateTime endTime, String sourceName) {
+  static String getDatePartitionClause(DateTime startTime, DateTime endTime, String sourceName, String customPartition) {
     if (sourceName.equals(PRESTO)) {
       DateTimeFormatter inputDataDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd-00");
       return "datepartition >= " + "'" + inputDataDateTimeFormatter.print(startTime) + "'";
@@ -398,8 +406,11 @@ public class SqlUtils {
       // makes the partition mandatory, ok in our case
       DateTime datePartitionLowerBound = startTime.withMillisOfDay(0).minusDays(1);
       DateTime datePartitionUpperBound = endTime.withMillisOfDay(0).plusDays(2);
-      return String.format("_PARTITIONTIME >= '%s' AND _PARTITIONTIME <= '%s'",
+      String partitionField = customPartition!= null ? customPartition : "_PARTITIONTIME";
+      return String.format("%s >= '%s' AND %s <= '%s'",
+              partitionField,
               inputDataDateTimeFormatter.print(datePartitionLowerBound),
+              partitionField,
               inputDataDateTimeFormatter.print(datePartitionUpperBound));
     } else {
       return null;
