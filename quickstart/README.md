@@ -8,7 +8,8 @@ This project is made to test and manage everything related to configurations and
 
 ## Pre requisites: 
 - `mysql` on your machine, `mysql` cli. Tested with mysql5.7.
-- `docker` (recent version), `docker-compose`
+- `docker` (recent version), `docker-compose`. 
+  Recommended config: Memory >=4Gb, Swap>=1.5gb, Disk Image: >=5Gb free.
 - `make`. run `make` in your shell to check.
 - `envsubst`. Run `envsubst --help` in your shell to check.
 
