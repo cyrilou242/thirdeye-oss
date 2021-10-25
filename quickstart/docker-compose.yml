@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  front:
+    image: thirdeye:latest
+    ports:
+      - "1426:1426"
+      - "1427:1427"
+    volumes:
+      - ./config:/opt/thirdeye/config
+    command: java -Dlog4j.configurationFile=log4j2.xml -cp ./bin/thirdeye-pinot.jar org.apache.pinot.thirdeye.dashboard.ThirdEyeDashboardApplication ./config
+  workers:
+    image: thirdeye:latest
+    ports:
+      - "1867:1867"
+      #- "1868:1868"
+    volumes:
+      - ./config:/opt/thirdeye/config
+    command: java -Dlog4j.configurationFile=log4j2.xml -cp ./bin/thirdeye-pinot.jar org.apache.pinot.thirdeye.anomaly.ThirdEyeAnomalyApplication ./config

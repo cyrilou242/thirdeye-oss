@@ -1,0 +1,6 @@
+databaseConfiguration:
+  ## notice useSSL=false
+  url: jdbc:mysql://${PERSISTENCE_MYSQL_HOST}:${PERSISTENCE_MYSQL_PORT}/${PERSISTENCE_MYSQL_DATABASE}?autoReconnect=true&useSSL=false
+  user: ${PERSISTENCE_MYSQL_USER}
+  password: "${PERSISTENCE_MYSQL_PASS}"
+  driver: com.mysql.jdbc.Driver

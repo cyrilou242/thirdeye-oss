@@ -1,0 +1,17 @@
+dataSourceConfigs:
+  - className: org.apache.pinot.thirdeye.datasource.sql.SqlThirdEyeDataSource
+    properties:
+      MySQL:
+        - db:
+            ## notice the &useSSL=false
+            dataset: jdbc:mysql://${DATASOURCE_MYSQL_HOST}:${DATASOURCE_MYSQL_PORT}/${DATASOURCE_MYSQL_DATABASE}?autoReconnect=true&useSSL=false
+          user: ${DATASOURCE_MYSQL_USER}
+          password: "${DATASOURCE_MYSQL_PASS}"
+## add other sql datasources here if you want
+## just hardcode things for test
+#        - other_db:
+#            dataset: jdbc:mysql://mySqlDBHost:${DATASOURCE_MYSQL_PORT}/${DATASOURCE_MYSQL_DATABASE}
+#          user: haha
+#          password: blabla
+
+
