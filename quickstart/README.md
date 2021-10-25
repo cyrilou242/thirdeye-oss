@@ -42,7 +42,7 @@ You may be prompted for your password.
     
 Then go to [localhost:1426](http://localhost:1426/)
 
-This setup generates the config from [configs-templatesdev](config-templates).  
+This setup generates the config from [configs-templates](config-templates).  
 This quick start can be used to test modifications to the config files.  
 Stop the docker containers: `docker-compose down`; edit the configurations in the [config](./config) folder, and relaunch with `docker-compose up`    
 You do not need to rebuild the docker image.
@@ -110,7 +110,7 @@ docker build --no-cache -t [Docker Tag] --build-arg PINOT_BRANCH=[PINOT_BRANCH] 
 Example
 
 ```SHELL
-docker build --no-cache -t thirdeye --build-arg PINOT_BRANCH=sql-quickstart --build-arg PINOT_GIT_URL=https://github.com/cyrilou242/incubator-pinot.git --build-arg MAVEN_VERSION=3.6.3 -f Dockerfile .
+docker build --no-cache -t thirdeye --build-arg PINOT_BRANCH=mysql-quickstart --build-arg PINOT_GIT_URL=https://github.com/cyrilou242/incubator-pinot.git --build-arg MAVEN_VERSION=3.6.3 -f Dockerfile .
 # equivalent to
 docker build -t thirdeye -f Dockerfile .
 ```
@@ -122,7 +122,7 @@ docker build -t thirdeye -f Dockerfile .
 ```SHELL
 docker run -it --name thirdeye -p 1426:1426 -p 1427:1427 thirdeye:latest /bin/bash
 ./gen_config.sh
-java -Dlog4j.configurationFile=log4j2.xml -cp "./bin/thirdeye-pinot-1.0.0-SNAPSHOT.jar" org.apache.pinot.thirdeye.dashboard.ThirdEyeDashboardApplication "./config"
+java -Dlog4j.configurationFile=log4j2.xml -cp "./bin/thirdeye-pinot.jar" org.apache.pinot.thirdeye.dashboard.ThirdEyeDashboardApplication "./config"
 ```
 
 ##### Interactive launch backend server with default configuration
@@ -130,5 +130,5 @@ java -Dlog4j.configurationFile=log4j2.xml -cp "./bin/thirdeye-pinot-1.0.0-SNAPSH
 ```SHELL
 docker run -it -p 1426:1426 -p 1427:1427 thirdeye:latest /bin/bash
 ./gen_config.sh
-java -Dlog4j.configurationFile=log4j2.xml -cp "./bin/thirdeye-pinot-1.0.0-SNAPSHOT.jar" org.apache.pinot.thirdeye.anomaly.ThirdEyeAnomalyApplication "./config"
+java -Dlog4j.configurationFile=log4j2.xml -cp "./bin/thirdeye-pinot.jar" org.apache.pinot.thirdeye.anomaly.ThirdEyeAnomalyApplication "./config"
 ```
