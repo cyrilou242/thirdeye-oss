@@ -17,3 +17,9 @@ services:
     volumes:
       - ./config:/opt/thirdeye/config
     command: java -Dlog4j.configurationFile=log4j2.xml -cp ./bin/thirdeye-pinot.jar org.apache.pinot.thirdeye.anomaly.ThirdEyeAnomalyApplication ./config
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true

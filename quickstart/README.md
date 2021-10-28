@@ -13,6 +13,13 @@ This project is made to test and manage everything related to configurations and
 - `make`. run `make` in your shell to check.
 - `envsubst`. Run `envsubst --help` in your shell to check.
 
+Want to run a MySQL 5.7 instance from docker?
+
+    # will run a MySQL instance on port 3307 
+    docker-compose up -d mysql
+    export PERSISTENCE_MYSQL_PORT=3307
+    export DATASOURCE_MYSQL_PORT=3307
+
 ## Prepare SQL tables
 The tutorial assumes a local mysql instance, and uses user `root` and empty password to create things. 
 It can be changed with environment variables, if need be.
@@ -38,7 +45,7 @@ You may be prompted for your password.
     ./gen_config.sh
 
     # run 
-    docker-compose up
+    docker-compose up front workers
     
 Then go to [localhost:1426](http://localhost:1426/)
 
