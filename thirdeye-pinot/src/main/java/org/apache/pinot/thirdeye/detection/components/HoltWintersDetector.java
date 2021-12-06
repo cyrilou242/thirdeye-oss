@@ -305,12 +305,13 @@ public class HoltWintersDetector implements BaselineProvider<HoltWintersDetector
           index = longSeries.find(timestamp);
           backtrackCounter++;
         }
-
         if (index != -1) {
           df = df.append(originalDF.slice(index, index + 1));
         } else {
           // If not found value up to 4 weeks, insert the last value
-          double lastVal = (originalDF.get(DataFrame.COL_VALUE)).getDouble(longSeries.find(dt.getMillis()));
+          // FIX: in case last value does not exist, put 0 (lot of missing data)
+          int indexReplacement = longSeries.find(dt.getMillis());
+          double lastVal = indexReplacement < 0 ? 0 : (originalDF.get(DataFrame.COL_VALUE)).getDouble(indexReplacement);
           DateTime nextDt = dt.minusDays(1);
           DataFrame appendDf = DataFrame.builder(DataFrame.COL_TIME, DataFrame.COL_VALUE).append(nextDt, lastVal).build();
           df = df.append(appendDf);
