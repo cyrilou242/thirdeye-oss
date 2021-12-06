@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+ <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2014-2018 LinkedIn Corp. (pinot-core@linkedin.com)
@@ -565,7 +565,6 @@
         <artifactId>commons-math</artifactId>
         <version>2.1</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -579,6 +578,33 @@
         <google-api-services-bigquery.version>v2-rev426-1.25.0</google-api-services-bigquery.version>
         <jdbc42.version>1.2.4</jdbc42.version>
       </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-install-plugin</artifactId>
+              <version>2.4</version>
+              <executions>
+                <execution>
+                  <id>bigquery-driver-install</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>install-file</goal>
+                  </goals>
+                  <configuration>
+                    <file>${session.executionRootDirectory}/bigquery-driver/SimbaJDBCDriverforGoogleBigQuery42_1.2.4.1007/GoogleBigQueryJDBC42.jar</file>
+                    <groupId>com.simba.googlebigquery</groupId>
+                    <artifactId>jdbc42</artifactId>
+                    <version>1.2.4</version>
+                    <packaging>jar</packaging>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+    </build>
     <dependencyManagement>
       <dependencies>
         <dependency>

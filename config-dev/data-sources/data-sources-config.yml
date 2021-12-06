@@ -1,0 +1,11 @@
+
+# Please put the mock data source as the first in this configuration.
+dataSourceConfigs:
+  - className: org.apache.pinot.thirdeye.datasource.sql.SqlThirdEyeDataSource
+    properties:
+      BigQuery:
+        - db:
+            monitoring: jdbc:bigquery://https://www.googleapis.com/bigquery/v2;ProjectId=development-175109;OAuthType=3;
+          driver: com.simba.googlebigquery.jdbc42.Driver
+
+
