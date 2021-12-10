@@ -14,3 +14,4 @@ test-output/
 *.swp
 docs/_build
 SimbaJDBCDriverforGoogleBigQuery*.zip
+/bigquery-driver
