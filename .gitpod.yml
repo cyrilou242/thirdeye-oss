@@ -1,8 +1,21 @@
-
 image: gitpod/workspace-mysql
 tasks:
-  - init: ./install.sh
-    command: echo 'Hey'
+# install envsubst: command not found
+# make mysql things: tables
+# make mysql things: gen a config and copy it
+  - init: |
+      brew install gettext
+      cd quickstart
+      make create-persistence-db-tables
+      make create-datasource-tables
+      export DATASOURCE_MYSQL_HOST=localhost
+      export PERSISTENCE_MYSQL_HOST=localhost
+      ./gen_config.sh
+      cp -r config ../thirdeye-pinot/
+      cd ..
+      ./install.sh bigquery cloudsql
+    command: ./run-frontend.sh
+  - command: ./run-backend.sh
 
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 ports:
