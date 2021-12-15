@@ -21,7 +21,7 @@ name: ThirdEye Tests
 
 on:
   pull_request:
-    branches: [ abtasty-master ]
+    branches: [ master ]
 
 jobs:
   te-unit-test:

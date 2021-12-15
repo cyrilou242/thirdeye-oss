@@ -22,5 +22,4 @@
 java -version
 
 # Check ThirdEye related changes
-cd thirdeye
 mvn test
