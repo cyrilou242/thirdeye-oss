@@ -14,8 +14,12 @@ tasks:
       cp -r config ../thirdeye-pinot/
       cd ..
       ./install.sh bigquery cloudsql
+      gp sync-done preparation
     command: ./run-frontend.sh
-  - command: ./run-backend.sh
+    openMode: tab-after
+  - init: gp sync-await preparation
+    command: ./run-backend.sh
+    openMode: tab-after
 
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 ports:
