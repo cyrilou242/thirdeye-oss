@@ -15,8 +15,13 @@ tasks:
       cd ..
       ./install.sh bigquery cloudsql
       gp sync-done preparation
+    command: echo "Welcome to the TE dev env"
+    openMode: tab-after
+
+  - init: gp sync-await preparation
     command: ./run-frontend.sh
     openMode: tab-after
+
   - init: gp sync-await preparation
     command: ./run-backend.sh
     openMode: tab-after

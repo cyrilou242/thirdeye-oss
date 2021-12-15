@@ -22,6 +22,7 @@ echo "*******************************************************"
 echo "Building ThirdEye"
 echo "*******************************************************"
 
-mvn install -DskipTests ${PROFILES_ARG}|| exit 1
+mvn install -DskipTests ${PROFILES_ARG}
+echo "Build finished"
 # don't build frontend
 #mvn install -pl "!thirdeye-frontend" -DskipTests ${PROFILES_ARG}|| exit 1
