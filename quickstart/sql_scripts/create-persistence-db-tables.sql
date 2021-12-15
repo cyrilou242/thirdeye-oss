@@ -277,7 +277,7 @@ create table if not exists entity_to_entity_mapping_index (
     update_time timestamp default current_timestamp,
     version int(10)
 ) ENGINE=InnoDB;
-ALTER TABLE `entity_to_entity_mapping_index` ADD UNIQUE `entity_mapping_unique_index`(`from_urn`, `to_urn`);
+ALTER TABLE `entity_to_entity_mapping_index` ADD UNIQUE `entity_mapping_unique_index`(`from_urn`(255), `to_urn`(255));
 create index entity_mapping_from_urn_idx on entity_to_entity_mapping_index(from_urn);
 create index entity_mapping_to_urn_idx on entity_to_entity_mapping_index(to_urn);
 create index entity_mapping_type_idx on entity_to_entity_mapping_index(mapping_type);

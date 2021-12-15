@@ -15,13 +15,13 @@ default:
 	@echo "Make is installed."
 
 create-persistence-db-tables:
-	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} -p ${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/create-persistence-db-tables.sql
+	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} --password=${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/create-persistence-db-tables.sql
 	@echo "Databse thirdeye created. Tables created."
 
 drop-persistence-tables:
-	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} -p ${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/drop-persistence-tables.sql
+	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} --password=${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/drop-persistence-tables.sql
 	@echo "Thirdeye persistence tables deleted."
 
 create-datasource-tables:
-	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} -p ${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/create-datasource-db-tables.sql
+	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} --password=${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/create-datasource-db-tables.sql
 	@echo "Thirdeye testdata databse created. Data generated in table transactions."
