@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5level [%t] %c{1.} - %m %X{job.name}%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.pinot" level="INFO">
+            <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.apache.pinot.thirdeye.detection.alert.scheme.DetectionJiraAlerter" level="INFO">
+            <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.apache.pinot.thirdeye.dashboard.ThirdEyeDashboardApplication" level="INFO">
+            <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.apache.pinot.thirdeye.anomaly.ThirdEyeAnomalyApplication" level="INFO">
+            <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.hibernate.engine.internal" level="WARN">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Root level="INFO">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

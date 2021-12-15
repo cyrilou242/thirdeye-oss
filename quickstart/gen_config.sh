@@ -1,8 +1,15 @@
+#!/bin/bash
 #LDAP - DIY
 #JIRA - DIY
 
+if [[ "$OSTYPE" == "linux"* ]]; then
+  DOCKER_LOCALHOST_FORWARD_ADDRESS="172.17.0.1"
+else
+ DOCKER_LOCALHOST_FORWARD_ADDRESS="host.docker.internal"
+fi
+
 ## DataSource - MySQL - VALUES CAN BE CHANGED HERE
-export DATASOURCE_MYSQL_HOST=${DATASOURCE_MYSQL_HOST:="host.docker.internal"}  #resolves to localhost of docker host when accessed from ThirdEye container
+export DATASOURCE_MYSQL_HOST=${DATASOURCE_MYSQL_HOST:="$DOCKER_LOCALHOST_FORWARD_ADDRESS"}  #resolves to localhost of docker host when accessed from ThirdEye container
 export DATASOURCE_MYSQL_PORT=${DATASOURCE_MYSQL_PORT:="3306"}  #default mysql port
 export DATASOURCE_MYSQL_DATABASE=${DATASOURCE_MYSQL_DATABASE:="testdata"}
 export DATASOURCE_MYSQL_USER=${DATASOURCE_MYSQL_USER:="root"}

@@ -1,0 +1,6 @@
+databaseConfiguration:
+  ## notice useSSL=false
+  url: jdbc:mysql://localhost:3306/thirdeye?autoReconnect=true&useSSL=false
+  user: root
+  password: ""
+  driver: com.mysql.jdbc.Driver

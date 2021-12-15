@@ -32,16 +32,14 @@ RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG /opt/.m2
 
-RUN git clone ${PINOT_GIT_URL} ${TE_BUILD_DIR} \
+RUN git clone -b ${PINOT_BRANCH} ${PINOT_GIT_URL} ${TE_BUILD_DIR} \
     && cd ${TE_BUILD_DIR}  \
-    && git checkout ${PINOT_BRANCH} \
-    && cd thirdeye \
     && ./install.sh \
     && mkdir -p ${TE_HOME}/config/default \
     && mkdir -p ${TE_HOME}/bin \
-    && cp -rp ${TE_BUILD_DIR}/thirdeye/thirdeye-pinot/config/* ${TE_HOME}/config/default/. \
-    && rm ${TE_BUILD_DIR}/thirdeye/thirdeye-pinot/target/thirdeye-pinot-*-sources.jar \
-    && cp ${TE_BUILD_DIR}/thirdeye/thirdeye-pinot/target/thirdeye-pinot-*.jar ${TE_HOME}/bin/thirdeye-pinot.jar \
+    && cp -rp ${TE_BUILD_DIR}/thirdeye-pinot/config/* ${TE_HOME}/config/default/. \
+    && rm ${TE_BUILD_DIR}/thirdeye-pinot/target/thirdeye-pinot-*-sources.jar \
+    && cp ${TE_BUILD_DIR}/thirdeye-pinot/target/thirdeye-pinot-*.jar ${TE_HOME}/bin/thirdeye-pinot.jar \
     && rm -rf ${TE_BUILD_DIR}
 
 COPY log4j2.xml ${TE_HOME}/

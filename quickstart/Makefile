@@ -25,4 +25,3 @@ drop-persistence-tables:
 create-datasource-tables:
 	mysql -h ${PERSISTENCE_MYSQL_HOST} -P ${PERSISTENCE_MYSQL_PORT} -u ${PERSISTENCE_MYSQL_USER} -p ${PERSISTENCE_MYSQL_TE_PWD} < sql_scripts/create-datasource-db-tables.sql
 	@echo "Thirdeye testdata databse created. Data generated in table transactions."
-
