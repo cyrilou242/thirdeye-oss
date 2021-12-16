@@ -687,6 +687,21 @@
                 </dependencies>
             </dependencyManagement>
         </profile>
+        <profile>
+            <id>mariadb</id>
+            <properties>
+                <mariadb.connector.version>2.7.4</mariadb.connector.version>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mariadb.jdbc</groupId>
+                        <artifactId>mariadb-java-client</artifactId>
+                        <version>${mariadb.connector.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
     </profiles>
 
     <reporting>
