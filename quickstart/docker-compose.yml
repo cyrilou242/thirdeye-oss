@@ -23,3 +23,9 @@ services:
       - "3307:3306"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+  mariadb:
+    image: mariadb:10.7
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"

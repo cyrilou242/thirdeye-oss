@@ -372,6 +372,15 @@
           </dependency>
         </dependencies>
     </profile>
+    <profile>
+      <id>mariadb</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
   <build>
