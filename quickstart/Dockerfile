@@ -1,6 +1,6 @@
 FROM openjdk:8 as thirdeye_build_env
 
-ARG PINOT_BRANCH=mysql-quickstart
+ARG PINOT_BRANCH=master
 ARG PINOT_GIT_URL="https://github.com/cyrilou242/incubator-pinot.git"
 RUN echo "Trying to build Thirdeye from [ ${PINOT_GIT_URL} ] on branch [ ${PINOT_BRANCH} ]"
 
