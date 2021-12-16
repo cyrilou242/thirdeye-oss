@@ -1,7 +1,7 @@
 image: gitpod/workspace-mysql
 tasks:
   - init: |
-      sudo apt-get update && sudo apt install -y tmux
+      brew install tmux
       brew install gettext
       cd quickstart
       make create-persistence-db-tables
@@ -15,8 +15,8 @@ tasks:
       gp sync-done preparation
     command: |
       echo "Welcome to the TE dev env"
-      echo "Run `tmux attach -t frontend` to attach to frontend terminal"
-      echo "Run `tmux attach -t backend` to attach to backend terminal"
+      echo "Run tmux attach -t frontend to attach to frontend terminal"
+      echo "Run tmux attach -t backend to attach to backend terminal"
     openMode: tab-after
 
   - init: gp sync-await preparation
