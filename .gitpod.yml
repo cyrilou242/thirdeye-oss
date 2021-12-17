@@ -1,7 +1,7 @@
 image: gitpod/workspace-mysql
 tasks:
   - init: |
-      brew install tmux
+      sudo apt-get update && sudo apt install -y tmux
       brew install gettext
       cd quickstart
       make create-persistence-db-tables
