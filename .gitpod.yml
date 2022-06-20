@@ -1,9 +1,7 @@
 image: gitpod/workspace-mysql
 tasks:
-# install envsubst: command not found
-# make mysql things: tables
-# make mysql things: gen a config and copy it
   - init: |
+      sudo apt-get update && sudo apt install -y tmux
       brew install gettext
       cd quickstart
       make create-persistence-db-tables
@@ -15,15 +13,18 @@ tasks:
       cd ..
       ./install.sh bigquery cloudsql
       gp sync-done preparation
-    command: echo "Welcome to the TE dev env"
+    command: |
+      echo "Welcome to the TE dev env"
+      echo "Run tmux attach -t frontend to attach to frontend terminal"
+      echo "Run tmux attach -t backend to attach to backend terminal"
     openMode: tab-after
 
   - init: gp sync-await preparation
-    command: ./run-frontend.sh
+    command: tmux new-session -d -s frontend './run-frontend.sh'
     openMode: tab-after
 
   - init: gp sync-await preparation
-    command: ./run-backend.sh
+    command: tmux new-session -d -s backend './run-backend.sh'
     openMode: tab-after
 
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
